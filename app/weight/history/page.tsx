@@ -1,0 +1,218 @@
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import {
+  Container,
+  Paper,
+  Typography,
+  Box,
+  CircularProgress,
+  Alert,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  IconButton,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+} from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
+import { useAuth } from '@/contexts/AuthContext';
+import { getWeightEntries, deleteWeightEntry } from '@/lib/firestore';
+import type { WeightEntry } from '@/types';
+
+export default function WeightHistoryPage() {
+  const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
+
+  const [loading, setLoading] = useState(true);
+  const [entries, setEntries] = useState<WeightEntry[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; entryId: string | null }>({
+    open: false,
+    entryId: null,
+  });
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/login');
+      return;
+    }
+
+    if (user) {
+      loadEntries();
+    }
+  }, [user, authLoading, router]);
+
+  const loadEntries = async () => {
+    if (!user) return;
+
+    try {
+      setLoading(true);
+      const data = await getWeightEntries(user.uid);
+      setEntries(data);
+    } catch (err) {
+      console.error('Error loading weight entries:', err);
+      setError('Failed to load weight entries');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteClick = (entryId: string) => {
+    setDeleteDialog({ open: true, entryId });
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!user || !deleteDialog.entryId) return;
+
+    try {
+      setDeleting(true);
+      await deleteWeightEntry(user.uid, deleteDialog.entryId);
+
+      // Remove from local state
+      setEntries(prev => prev.filter(e => e.id !== deleteDialog.entryId));
+
+      setDeleteDialog({ open: false, entryId: null });
+    } catch (err) {
+      console.error('Error deleting weight entry:', err);
+      setError('Failed to delete entry. Please try again.');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteDialog({ open: false, entryId: null });
+  };
+
+  const formatDate = (timestamp: any) => {
+    if (!timestamp) return 'N/A';
+    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  if (authLoading || loading) {
+    return (
+      <Container maxWidth="md" sx={{ mt: 8, display: 'flex', justifyContent: 'center' }}>
+        <CircularProgress />
+      </Container>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
+
+  return (
+    <Container maxWidth="md" sx={{ mt: 8, mb: 4 }}>
+      <Paper elevation={3} sx={{ p: 4 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Typography variant="h4" component="h1">
+            Weight History
+          </Typography>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => router.push('/weight/add')}
+          >
+            Add Entry
+          </Button>
+        </Box>
+
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError(null)}>
+            {error}
+          </Alert>
+        )}
+
+        {entries.length === 0 ? (
+          <Box sx={{ textAlign: 'center', py: 4 }}>
+            <Typography variant="h6" color="text.secondary" gutterBottom>
+              No weight entries yet
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+              Start tracking your weight to see your progress
+            </Typography>
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={() => router.push('/weight/add')}
+            >
+              Add First Entry
+            </Button>
+          </Box>
+        ) : (
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell><strong>Date</strong></TableCell>
+                  <TableCell align="right"><strong>Weight (kg)</strong></TableCell>
+                  <TableCell align="center"><strong>Actions</strong></TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {entries.map((entry) => (
+                  <TableRow key={entry.id} hover>
+                    <TableCell>{formatDate(entry.date)}</TableCell>
+                    <TableCell align="right">{entry.weight.toFixed(1)}</TableCell>
+                    <TableCell align="center">
+                      <IconButton
+                        color="error"
+                        onClick={() => handleDeleteClick(entry.id)}
+                        title="Delete entry"
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+
+        <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
+          <Button variant="outlined" onClick={() => router.push('/')}>
+            Back to Home
+          </Button>
+        </Box>
+      </Paper>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={deleteDialog.open}
+        onClose={handleDeleteCancel}
+      >
+        <DialogTitle>Delete Weight Entry?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this weight entry? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel} disabled={deleting}>
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="error" disabled={deleting}>
+            {deleting ? <CircularProgress size={20} /> : 'Delete'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Container>
+  );
+}
