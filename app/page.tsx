@@ -32,8 +32,9 @@ import {
   getProgressMedia,
 } from '@/lib/firestore';
 import { calculateBMI, calculateWeightChange } from '@/lib/utils';
-import type { User as UserProfile, WeightEntry } from '@/types';
+import type { User as UserProfile, WeightEntry, BodyMeasurement } from '@/types';
 import WeightChart from '@/components/WeightChart';
+import BodyMeasurementsChart from '@/components/BodyMeasurementsChart';
 
 export default function HomePage() {
   const { user, loading, logout } = useAuth();
@@ -43,6 +44,7 @@ export default function HomePage() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [latestWeight, setLatestWeight] = useState<WeightEntry | null>(null);
   const [weightEntries, setWeightEntries] = useState<WeightEntry[]>([]);
+  const [bodyMeasurements, setBodyMeasurements] = useState<BodyMeasurement[]>([]);
   const [weightComparison, setWeightComparison] = useState<{
     today: number;
     yesterday: number;
@@ -85,6 +87,7 @@ export default function HomePage() {
       setProfile(userProfile);
       setLatestWeight(latest);
       setWeightEntries(entries);
+      setBodyMeasurements(measurements);
       setTotalEntries(entries.length);
       setTotalMeasurements(measurements.length);
       setTotalMedia(media.length);
@@ -307,6 +310,20 @@ export default function HomePage() {
                 <Card>
                   <CardContent>
                     <WeightChart entries={weightEntries} height={350} />
+                  </CardContent>
+                </Card>
+              </Box>
+            )}
+
+            {/* Body Measurements Chart */}
+            {bodyMeasurements.length > 0 && (
+              <Box sx={{ mb: 4 }}>
+                <Typography variant="h5" gutterBottom>
+                  Body Measurements Progress
+                </Typography>
+                <Card>
+                  <CardContent>
+                    <BodyMeasurementsChart measurements={bodyMeasurements} height={350} />
                   </CardContent>
                 </Card>
               </Box>

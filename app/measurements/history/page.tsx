@@ -29,6 +29,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useAuth } from '@/contexts/AuthContext';
 import { getBodyMeasurements, deleteBodyMeasurement } from '@/lib/firestore';
 import type { BodyMeasurement } from '@/types';
+import BodyMeasurementsChart from '@/components/BodyMeasurementsChart';
 
 export default function MeasurementsHistoryPage() {
   const { user, loading: authLoading } = useAuth();
@@ -166,55 +167,63 @@ export default function MeasurementsHistoryPage() {
             </Button>
           </Box>
         ) : (
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>
-                    <strong>Date</strong>
-                  </TableCell>
-                  <TableCell align="right">
-                    <strong>Waist</strong>
-                  </TableCell>
-                  <TableCell align="right">
-                    <strong>Bicep</strong>
-                  </TableCell>
-                  <TableCell align="right">
-                    <strong>Thigh</strong>
-                  </TableCell>
-                  <TableCell align="center">
-                    <strong>Actions</strong>
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {measurements.map((measurement) => (
-                  <TableRow key={measurement.id} hover>
-                    <TableCell>{formatDate(measurement.date)}</TableCell>
-                    <TableCell align="right">{formatMeasurement(measurement.waist)}</TableCell>
-                    <TableCell align="right">{formatMeasurement(measurement.bicep)}</TableCell>
-                    <TableCell align="right">{formatMeasurement(measurement.thigh)}</TableCell>
+          <>
+            {/* Body Measurements Chart */}
+            <Box sx={{ mb: 4 }}>
+              <BodyMeasurementsChart measurements={measurements} height={300} />
+            </Box>
+
+            {/* Measurements Table */}
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>
+                      <strong>Date</strong>
+                    </TableCell>
+                    <TableCell align="right">
+                      <strong>Waist</strong>
+                    </TableCell>
+                    <TableCell align="right">
+                      <strong>Bicep</strong>
+                    </TableCell>
+                    <TableCell align="right">
+                      <strong>Thigh</strong>
+                    </TableCell>
                     <TableCell align="center">
-                      <IconButton
-                        color="primary"
-                        onClick={() => router.push(`/measurements/edit/${measurement.id}`)}
-                        title="Edit measurement"
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        color="error"
-                        onClick={() => handleDeleteClick(measurement.id)}
-                        title="Delete measurement"
-                      >
-                        <DeleteIcon />
-                      </IconButton>
+                      <strong>Actions</strong>
                     </TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                </TableHead>
+                <TableBody>
+                  {measurements.map((measurement) => (
+                    <TableRow key={measurement.id} hover>
+                      <TableCell>{formatDate(measurement.date)}</TableCell>
+                      <TableCell align="right">{formatMeasurement(measurement.waist)}</TableCell>
+                      <TableCell align="right">{formatMeasurement(measurement.bicep)}</TableCell>
+                      <TableCell align="right">{formatMeasurement(measurement.thigh)}</TableCell>
+                      <TableCell align="center">
+                        <IconButton
+                          color="primary"
+                          onClick={() => router.push(`/measurements/edit/${measurement.id}`)}
+                          title="Edit measurement"
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          color="error"
+                          onClick={() => handleDeleteClick(measurement.id)}
+                          title="Delete measurement"
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </>
         )}
 
         <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
