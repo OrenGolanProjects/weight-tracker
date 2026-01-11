@@ -21,11 +21,13 @@ import {
   DialogContent,
   DialogActions,
   Chip,
+  Stack,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import CloseIcon from '@mui/icons-material/Close';
+import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
 import { useAuth } from '@/contexts/AuthContext';
 import { getProgressMedia, deleteProgressMedia } from '@/lib/firestore';
 import { deletePhoto, deleteMedia } from '@/lib/storage';
@@ -173,13 +175,22 @@ export default function MediaGalleryPage() {
           <Typography variant="h4" component="h1">
             Progress Media
           </Typography>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={() => router.push('/media/add')}
-          >
-            Add Media
-          </Button>
+          <Stack direction="row" spacing={2}>
+            <Button
+              variant="outlined"
+              startIcon={<CompareArrowsIcon />}
+              onClick={() => router.push('/media/compare')}
+            >
+              Compare Photos
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={() => router.push('/media/add')}
+            >
+              Add Media
+            </Button>
+          </Stack>
         </Box>
 
         <Tabs
