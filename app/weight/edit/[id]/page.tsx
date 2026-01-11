@@ -49,7 +49,7 @@ export default function EditWeightPage() {
     try {
       setLoading(true);
       const entries = await getWeightEntries(user.uid);
-      const entry = entries.find(e => e.id === entryId);
+      const entry = entries.find((e) => e.id === entryId);
 
       if (entry) {
         setDate(dayjs(entry.date.toDate()));
@@ -96,7 +96,6 @@ export default function EditWeightPage() {
       setTimeout(() => {
         router.push('/weight/history');
       }, 1000);
-
     } catch (err) {
       console.error('Error updating weight entry:', err);
       setError('Failed to update weight entry. Please try again.');

@@ -38,10 +38,7 @@ export const getUserProfile = async (uid: string): Promise<User | null> => {
 /**
  * Create user profile document
  */
-export const createUserProfile = async (
-  uid: string,
-  data: Partial<User>
-): Promise<void> => {
+export const createUserProfile = async (uid: string, data: Partial<User>): Promise<void> => {
   try {
     await setDoc(doc(db, 'users', uid), {
       ...data,
@@ -57,10 +54,7 @@ export const createUserProfile = async (
 /**
  * Update user profile document
  */
-export const updateUserProfile = async (
-  uid: string,
-  data: Partial<User>
-): Promise<void> => {
+export const updateUserProfile = async (uid: string, data: Partial<User>): Promise<void> => {
   try {
     await updateDoc(doc(db, 'users', uid), {
       ...data,
@@ -88,9 +82,7 @@ export const getWeightEntries = async (
       limit(limitCount)
     );
     const snapshot = await getDocs(q);
-    return snapshot.docs.map(
-      (doc) => ({ id: doc.id, ...doc.data() } as WeightEntry)
-    );
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as WeightEntry);
   } catch (error) {
     console.error('Error getting weight entries:', error);
     throw error;
@@ -100,9 +92,7 @@ export const getWeightEntries = async (
 /**
  * Get latest weight entry
  */
-export const getLatestWeight = async (
-  uid: string
-): Promise<WeightEntry | null> => {
+export const getLatestWeight = async (uid: string): Promise<WeightEntry | null> => {
   try {
     const q = query(
       collection(db, `users/${uid}/weightEntries`),
@@ -167,7 +157,7 @@ export const updateWeightEntry = async (
   data: { date?: Date; weight?: number }
 ): Promise<void> => {
   try {
-    const updateData: any = {
+    const updateData: Record<string, unknown> = {
       updatedAt: serverTimestamp(),
     };
     if (data.date) updateData.date = Timestamp.fromDate(data.date);
@@ -183,10 +173,7 @@ export const updateWeightEntry = async (
 /**
  * Delete weight entry
  */
-export const deleteWeightEntry = async (
-  uid: string,
-  entryId: string
-): Promise<void> => {
+export const deleteWeightEntry = async (uid: string, entryId: string): Promise<void> => {
   try {
     await deleteDoc(doc(db, `users/${uid}/weightEntries`, entryId));
   } catch (error) {
@@ -211,9 +198,7 @@ export const getBodyMeasurements = async (
       limit(limitCount)
     );
     const snapshot = await getDocs(q);
-    return snapshot.docs.map(
-      (doc) => ({ id: doc.id, ...doc.data() } as BodyMeasurement)
-    );
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as BodyMeasurement);
   } catch (error) {
     console.error('Error getting body measurements:', error);
     throw error;
@@ -223,9 +208,7 @@ export const getBodyMeasurements = async (
 /**
  * Get latest body measurement
  */
-export const getLatestMeasurement = async (
-  uid: string
-): Promise<BodyMeasurement | null> => {
+export const getLatestMeasurement = async (uid: string): Promise<BodyMeasurement | null> => {
   try {
     const q = query(
       collection(db, `users/${uid}/bodyMeasurements`),
@@ -247,20 +230,17 @@ export const getLatestMeasurement = async (
  */
 export const addBodyMeasurement = async (
   uid: string,
-  data: { date: Date; waist: number; bicep: number; thigh: number }
+  data: { date: Date; waist: number | null; bicep: number | null; thigh: number | null }
 ): Promise<string> => {
   try {
-    const docRef = await addDoc(
-      collection(db, `users/${uid}/bodyMeasurements`),
-      {
-        date: Timestamp.fromDate(data.date),
-        waist: data.waist,
-        bicep: data.bicep,
-        thigh: data.thigh,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp(),
-      }
-    );
+    const docRef = await addDoc(collection(db, `users/${uid}/bodyMeasurements`), {
+      date: Timestamp.fromDate(data.date),
+      waist: data.waist,
+      bicep: data.bicep,
+      thigh: data.thigh,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
     return docRef.id;
   } catch (error) {
     console.error('Error adding body measurement:', error);
@@ -276,13 +256,13 @@ export const updateBodyMeasurement = async (
   measurementId: string,
   data: {
     date?: Date;
-    waist?: number;
-    bicep?: number;
-    thigh?: number;
+    waist?: number | null;
+    bicep?: number | null;
+    thigh?: number | null;
   }
 ): Promise<void> => {
   try {
-    const updateData: any = {
+    const updateData: Record<string, unknown> = {
       updatedAt: serverTimestamp(),
     };
     if (data.date) updateData.date = Timestamp.fromDate(data.date);
@@ -290,10 +270,7 @@ export const updateBodyMeasurement = async (
     if (data.bicep !== undefined) updateData.bicep = data.bicep;
     if (data.thigh !== undefined) updateData.thigh = data.thigh;
 
-    await updateDoc(
-      doc(db, `users/${uid}/bodyMeasurements`, measurementId),
-      updateData
-    );
+    await updateDoc(doc(db, `users/${uid}/bodyMeasurements`, measurementId), updateData);
   } catch (error) {
     console.error('Error updating body measurement:', error);
     throw error;
@@ -303,10 +280,7 @@ export const updateBodyMeasurement = async (
 /**
  * Delete body measurement
  */
-export const deleteBodyMeasurement = async (
-  uid: string,
-  measurementId: string
-): Promise<void> => {
+export const deleteBodyMeasurement = async (uid: string, measurementId: string): Promise<void> => {
   try {
     await deleteDoc(doc(db, `users/${uid}/bodyMeasurements`, measurementId));
   } catch (error) {
@@ -342,9 +316,7 @@ export const getProgressMedia = async (
       );
     }
     const snapshot = await getDocs(q);
-    return snapshot.docs.map(
-      (doc) => ({ id: doc.id, ...doc.data() } as ProgressMedia)
-    );
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as ProgressMedia);
   } catch (error) {
     console.error('Error getting progress media:', error);
     throw error;
@@ -394,10 +366,7 @@ export const addProgressMedia = async (
 /**
  * Delete progress media
  */
-export const deleteProgressMedia = async (
-  uid: string,
-  mediaId: string
-): Promise<void> => {
+export const deleteProgressMedia = async (uid: string, mediaId: string): Promise<void> => {
   try {
     await deleteDoc(doc(db, `users/${uid}/progressMedia`, mediaId));
   } catch (error) {

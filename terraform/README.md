@@ -5,6 +5,7 @@ This directory contains Terraform configuration to provision Firebase infrastruc
 ## Prerequisites
 
 1. **Install Terraform**
+
    ```bash
    # macOS
    brew install terraform
@@ -13,6 +14,7 @@ This directory contains Terraform configuration to provision Firebase infrastruc
    ```
 
 2. **Install Google Cloud SDK**
+
    ```bash
    brew install --cask google-cloud-sdk
    ```
@@ -148,20 +150,25 @@ Or manually add rules in Firebase Console.
 ## Troubleshooting
 
 ### "Billing account required"
+
 Firebase requires a billing account (even for free tier). Link a billing account in Google Cloud Console.
 
 ### "API not enabled"
+
 Run the API enable commands from Step 2 again.
 
 ### "Permission denied"
+
 Ensure you're authenticated with `gcloud auth application-default login`
 
 ### "Project already exists"
+
 Choose a different project ID in terraform.tfvars
 
 ## Cost
 
 Everything provisioned by this Terraform configuration is on Firebase's **FREE Spark plan**. No costs incurred for infrastructure itself, but ensure you stay within free tier limits:
+
 - Firestore: 50k reads, 20k writes per day
 - Storage: 5 GB storage, 1 GB downloads per day
 - Authentication: Unlimited Google sign-ins
@@ -169,6 +176,7 @@ Everything provisioned by this Terraform configuration is on Firebase's **FREE S
 ## Next Steps
 
 After Terraform completes:
+
 1. ✅ Firebase infrastructure created
 2. ✅ Environment variables in `.env.local`
 3. ⏳ Enable Google OAuth in Firebase Console (manual step)

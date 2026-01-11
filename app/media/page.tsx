@@ -44,7 +44,11 @@ export default function MediaGalleryPage() {
     open: false,
     media: null,
   });
-  const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; mediaId: string | null; media: ProgressMedia | null }>({
+  const [deleteDialog, setDeleteDialog] = useState<{
+    open: boolean;
+    mediaId: string | null;
+    media: ProgressMedia | null;
+  }>({
     open: false,
     mediaId: null,
     media: null,
@@ -67,7 +71,7 @@ export default function MediaGalleryPage() {
     if (mediaFilter === 'all') {
       setFilteredMedia(allMedia);
     } else {
-      setFilteredMedia(allMedia.filter(m => m.type === mediaFilter));
+      setFilteredMedia(allMedia.filter((m) => m.type === mediaFilter));
     }
   }, [mediaFilter, allMedia]);
 
@@ -116,7 +120,7 @@ export default function MediaGalleryPage() {
       await deleteProgressMedia(user.uid, deleteDialog.mediaId);
 
       // Remove from local state
-      setAllMedia(prev => prev.filter(m => m.id !== deleteDialog.mediaId));
+      setAllMedia((prev) => prev.filter((m) => m.id !== deleteDialog.mediaId));
 
       setDeleteDialog({ open: false, mediaId: null, media: null });
     } catch (err) {
@@ -131,13 +135,16 @@ export default function MediaGalleryPage() {
     setDeleteDialog({ open: false, mediaId: null, media: null });
   };
 
-  const formatDate = (timestamp: any) => {
+  const formatDate = (timestamp: { toDate?: () => Date } | Date | null | undefined) => {
     if (!timestamp) return 'N/A';
-    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    const date =
+      typeof timestamp === 'object' && 'toDate' in timestamp && timestamp.toDate
+        ? timestamp.toDate()
+        : new Date(timestamp as Date);
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     });
   };
 
@@ -175,10 +182,20 @@ export default function MediaGalleryPage() {
           </Button>
         </Box>
 
-        <Tabs value={mediaFilter} onChange={(_, newValue) => setMediaFilter(newValue)} sx={{ mb: 3 }}>
+        <Tabs
+          value={mediaFilter}
+          onChange={(_, newValue) => setMediaFilter(newValue)}
+          sx={{ mb: 3 }}
+        >
           <Tab label={`All (${allMedia.length})`} value="all" />
-          <Tab label={`Photos (${allMedia.filter(m => m.type === 'photo').length})`} value="photo" />
-          <Tab label={`Videos (${allMedia.filter(m => m.type === 'video').length})`} value="video" />
+          <Tab
+            label={`Photos (${allMedia.filter((m) => m.type === 'photo').length})`}
+            value="photo"
+          />
+          <Tab
+            label={`Videos (${allMedia.filter((m) => m.type === 'video').length})`}
+            value="video"
+          />
         </Tabs>
 
         {error && (
@@ -262,12 +279,7 @@ export default function MediaGalleryPage() {
       </Paper>
 
       {/* View Dialog */}
-      <Dialog
-        open={viewDialog.open}
-        onClose={handleViewClose}
-        maxWidth="md"
-        fullWidth
-      >
+      <Dialog open={viewDialog.open} onClose={handleViewClose} maxWidth="md" fullWidth>
         {viewDialog.media && (
           <>
             <DialogTitle>
@@ -316,7 +328,8 @@ export default function MediaGalleryPage() {
         <DialogTitle>Delete Media?</DialogTitle>
         <DialogContent>
           <Typography>
-            Are you sure you want to delete this {deleteDialog.media?.type}? This action cannot be undone.
+            Are you sure you want to delete this {deleteDialog.media?.type}? This action cannot be
+            undone.
           </Typography>
         </DialogContent>
         <DialogActions>

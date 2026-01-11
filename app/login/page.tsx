@@ -2,14 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  Box,
-  Button,
-  Container,
-  Paper,
-  Typography,
-  CircularProgress,
-} from '@mui/material';
+import { Box, Button, Container, Paper, Typography, CircularProgress } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import { useAuth } from '@/contexts/AuthContext';
@@ -83,14 +76,8 @@ export default function LoginPage() {
             Weight Tracker
           </Typography>
 
-          <Typography
-            variant="body1"
-            color="text.secondary"
-            align="center"
-            sx={{ mb: 4 }}
-          >
-            Track your weight, body measurements, and progress with photos and
-            videos
+          <Typography variant="body1" color="text.secondary" align="center" sx={{ mb: 4 }}>
+            Track your weight, body measurements, and progress with photos and videos
           </Typography>
 
           {/* Google Sign In Button */}

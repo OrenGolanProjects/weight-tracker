@@ -40,6 +40,7 @@ export interface ProgressMedia {
   mediaUrl: string;
   thumbnailUrl: string;
   storagePath: string;
+  thumbnailPath: string | null; // for photos, null for videos
   duration: number | null; // in seconds, null for photos
   fileSize: number; // in bytes
   weight: number | null; // optional: weight at time of capture

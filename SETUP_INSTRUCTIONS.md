@@ -1,6 +1,7 @@
 # Firebase Setup Instructions - COPY & PASTE THESE COMMANDS
 
 ## ✅ Files Already Created
+
 - All Terraform configuration files
 - Firestore security rules
 - Storage security rules
@@ -9,12 +10,14 @@
 ## 🚀 Commands to Run (Copy & Paste Each Section)
 
 ### Step 1: Authenticate with Google Cloud
+
 ```bash
 gcloud auth login
 gcloud auth application-default login
 ```
 
 ### Step 2: Create GCP Project & Enable Billing
+
 ```bash
 # Create unique project ID
 export PROJECT_ID="weight-tracker-$(date +%s)"
@@ -26,12 +29,14 @@ gcloud config set project $PROJECT_ID
 ```
 
 **⚠️ STOP HERE!**
+
 1. Go to: https://console.cloud.google.com/billing
 2. Find your project "Weight Tracker"
 3. Click "Link a billing account" (required even for free tier)
 4. Then continue below ⬇️
 
 ### Step 3: Enable Required APIs
+
 ```bash
 gcloud services enable firebase.googleapis.com
 gcloud services enable firestore.googleapis.com
@@ -40,6 +45,7 @@ gcloud services enable storage.googleapis.com
 ```
 
 ### Step 4: Configure Terraform
+
 ```bash
 cd "/Users/user/Library/CloudStorage/OneDrive-Personal/OrenFolder/Work develop/Train_followup/weight-tracker/terraform"
 
@@ -56,6 +62,7 @@ cat terraform.tfvars
 ```
 
 ### Step 5: Run Terraform
+
 ```bash
 # Initialize Terraform
 terraform init
@@ -71,6 +78,7 @@ terraform output -raw env_vars > ../.env.local
 ```
 
 ### Step 6: View Your Firebase Console
+
 ```bash
 # Get your Firebase Console URL
 terraform output firebase_console_url
@@ -95,6 +103,7 @@ Open the URL from above in your browser and do this:
 10. Click **Publish App** (optional, or keep in testing mode)
 
 ### Step 7: Deploy Security Rules
+
 ```bash
 cd "/Users/user/Library/CloudStorage/OneDrive-Personal/OrenFolder/Work develop/Train_followup/weight-tracker"
 
@@ -113,6 +122,7 @@ firebase deploy --only firestore:rules,storage:rules
 ```
 
 ### Step 8: Test the App! 🎉
+
 ```bash
 # Start development server
 pnpm dev
@@ -125,6 +135,7 @@ Then open http://localhost:3000 and sign in with **orenuki@gmail.com**
 ## 🎯 Quick Reference
 
 If you get lost, here's the order:
+
 1. ✅ Authenticate (gcloud auth)
 2. ✅ Create project
 3. ⚠️ Enable billing (manual in browser)

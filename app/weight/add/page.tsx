@@ -66,7 +66,6 @@ export default function AddWeightPage() {
       setTimeout(() => {
         router.push('/');
       }, 1000);
-
     } catch (err) {
       console.error('Error saving weight entry:', err);
       setError('Failed to save weight entry. Please try again.');
@@ -164,12 +163,7 @@ export default function AddWeightPage() {
             {saving ? <CircularProgress size={24} /> : 'Save Weight Entry'}
           </Button>
 
-          <Button
-            fullWidth
-            variant="outlined"
-            onClick={() => router.push('/')}
-            disabled={saving}
-          >
+          <Button fullWidth variant="outlined" onClick={() => router.push('/')} disabled={saving}>
             Cancel
           </Button>
         </Box>

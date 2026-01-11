@@ -1,9 +1,4 @@
-import {
-  ref,
-  uploadBytes,
-  getDownloadURL,
-  deleteObject,
-} from 'firebase/storage';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { storage } from './firebase';
 import imageCompression from 'browser-image-compression';
 
@@ -123,15 +118,9 @@ export const deleteMedia = async (storagePath: string): Promise<void> => {
  * @param originalPath - Path to original photo
  * @param thumbnailPath - Path to thumbnail
  */
-export const deletePhoto = async (
-  originalPath: string,
-  thumbnailPath: string
-): Promise<void> => {
+export const deletePhoto = async (originalPath: string, thumbnailPath: string): Promise<void> => {
   try {
-    await Promise.all([
-      deleteMedia(originalPath),
-      deleteMedia(thumbnailPath),
-    ]);
+    await Promise.all([deleteMedia(originalPath), deleteMedia(thumbnailPath)]);
   } catch (error) {
     console.error('Error deleting photo:', error);
     throw error;

@@ -175,7 +175,6 @@ export default function AddMediaPage() {
       setTimeout(() => {
         router.push('/media');
       }, 1500);
-
     } catch (err) {
       console.error('Error uploading media:', err);
       setError(err instanceof Error ? err.message : 'Failed to upload media. Please try again.');

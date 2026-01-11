@@ -9,7 +9,7 @@ import { BMICategory, WeightComparison } from '@/types';
 export const calculateBMI = (weight: number, height: number): number => {
   if (weight <= 0 || height <= 0) return 0;
   const heightInMeters = height / 100;
-  return parseFloat((weight / (heightInMeters ** 2)).toFixed(1));
+  return parseFloat((weight / heightInMeters ** 2).toFixed(1));
 };
 
 /**
@@ -30,10 +30,7 @@ export const getBMICategory = (bmi: number): BMICategory => {
  * @param yesterday Yesterday's weight
  * @returns Weight comparison object
  */
-export const calculateWeightChange = (
-  today: number,
-  yesterday: number
-): WeightComparison => {
+export const calculateWeightChange = (today: number, yesterday: number): WeightComparison => {
   if (yesterday === 0) {
     return {
       today,
@@ -43,9 +40,7 @@ export const calculateWeightChange = (
     };
   }
 
-  const percentageChange = parseFloat(
-    (((today - yesterday) / yesterday) * 100).toFixed(2)
-  );
+  const percentageChange = parseFloat((((today - yesterday) / yesterday) * 100).toFixed(2));
 
   let status: 'Gain' | 'Loss' | 'Same' = 'Same';
   if (percentageChange > 0) status = 'Gain';
@@ -93,10 +88,7 @@ export const formatFileSize = (bytes: number): string => {
  * @param type Expected type ('photo' or 'video')
  * @returns True if valid
  */
-export const validateFileType = (
-  file: File,
-  type: 'photo' | 'video'
-): boolean => {
+export const validateFileType = (file: File, type: 'photo' | 'video'): boolean => {
   if (type === 'photo') {
     return file.type.startsWith('image/');
   } else {

@@ -37,10 +37,12 @@ export default function MeasurementsHistoryPage() {
   const [loading, setLoading] = useState(true);
   const [measurements, setMeasurements] = useState<BodyMeasurement[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; measurementId: string | null }>({
-    open: false,
-    measurementId: null,
-  });
+  const [deleteDialog, setDeleteDialog] = useState<{ open: boolean; measurementId: string | null }>(
+    {
+      open: false,
+      measurementId: null,
+    }
+  );
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
@@ -81,7 +83,7 @@ export default function MeasurementsHistoryPage() {
       await deleteBodyMeasurement(user.uid, deleteDialog.measurementId);
 
       // Remove from local state
-      setMeasurements(prev => prev.filter(m => m.id !== deleteDialog.measurementId));
+      setMeasurements((prev) => prev.filter((m) => m.id !== deleteDialog.measurementId));
 
       setDeleteDialog({ open: false, measurementId: null });
     } catch (err) {
@@ -96,13 +98,16 @@ export default function MeasurementsHistoryPage() {
     setDeleteDialog({ open: false, measurementId: null });
   };
 
-  const formatDate = (timestamp: any) => {
+  const formatDate = (timestamp: { toDate?: () => Date } | Date | null | undefined) => {
     if (!timestamp) return 'N/A';
-    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    const date =
+      typeof timestamp === 'object' && 'toDate' in timestamp && timestamp.toDate
+        ? timestamp.toDate()
+        : new Date(timestamp as Date);
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     });
   };
 
@@ -165,11 +170,21 @@ export default function MeasurementsHistoryPage() {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell><strong>Date</strong></TableCell>
-                  <TableCell align="right"><strong>Waist</strong></TableCell>
-                  <TableCell align="right"><strong>Bicep</strong></TableCell>
-                  <TableCell align="right"><strong>Thigh</strong></TableCell>
-                  <TableCell align="center"><strong>Actions</strong></TableCell>
+                  <TableCell>
+                    <strong>Date</strong>
+                  </TableCell>
+                  <TableCell align="right">
+                    <strong>Waist</strong>
+                  </TableCell>
+                  <TableCell align="right">
+                    <strong>Bicep</strong>
+                  </TableCell>
+                  <TableCell align="right">
+                    <strong>Thigh</strong>
+                  </TableCell>
+                  <TableCell align="center">
+                    <strong>Actions</strong>
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -210,10 +225,7 @@ export default function MeasurementsHistoryPage() {
       </Paper>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog
-        open={deleteDialog.open}
-        onClose={handleDeleteCancel}
-      >
+      <Dialog open={deleteDialog.open} onClose={handleDeleteCancel}>
         <DialogTitle>Delete Measurement?</DialogTitle>
         <DialogContent>
           <DialogContentText>

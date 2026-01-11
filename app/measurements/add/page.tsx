@@ -41,7 +41,7 @@ export default function AddMeasurementsPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
     setError(null);
     setSuccess(false);
   };
@@ -97,7 +97,6 @@ export default function AddMeasurementsPage() {
       setTimeout(() => {
         router.push('/');
       }, 1000);
-
     } catch (err) {
       console.error('Error saving body measurements:', err);
       setError('Failed to save measurements. Please try again.');
@@ -223,12 +222,7 @@ export default function AddMeasurementsPage() {
             {saving ? <CircularProgress size={24} /> : 'Save Measurements'}
           </Button>
 
-          <Button
-            fullWidth
-            variant="outlined"
-            onClick={() => router.push('/')}
-            disabled={saving}
-          >
+          <Button fullWidth variant="outlined" onClick={() => router.push('/')} disabled={saving}>
             Cancel
           </Button>
         </Box>

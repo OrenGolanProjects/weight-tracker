@@ -81,7 +81,7 @@ export default function WeightHistoryPage() {
       await deleteWeightEntry(user.uid, deleteDialog.entryId);
 
       // Remove from local state
-      setEntries(prev => prev.filter(e => e.id !== deleteDialog.entryId));
+      setEntries((prev) => prev.filter((e) => e.id !== deleteDialog.entryId));
 
       setDeleteDialog({ open: false, entryId: null });
     } catch (err) {
@@ -96,13 +96,16 @@ export default function WeightHistoryPage() {
     setDeleteDialog({ open: false, entryId: null });
   };
 
-  const formatDate = (timestamp: any) => {
+  const formatDate = (timestamp: { toDate?: () => Date } | Date | null | undefined) => {
     if (!timestamp) return 'N/A';
-    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    const date =
+      typeof timestamp === 'object' && 'toDate' in timestamp && timestamp.toDate
+        ? timestamp.toDate()
+        : new Date(timestamp as Date);
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
     });
   };
 
@@ -161,9 +164,15 @@ export default function WeightHistoryPage() {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell><strong>Date</strong></TableCell>
-                  <TableCell align="right"><strong>Weight (kg)</strong></TableCell>
-                  <TableCell align="center"><strong>Actions</strong></TableCell>
+                  <TableCell>
+                    <strong>Date</strong>
+                  </TableCell>
+                  <TableCell align="right">
+                    <strong>Weight (kg)</strong>
+                  </TableCell>
+                  <TableCell align="center">
+                    <strong>Actions</strong>
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -202,10 +211,7 @@ export default function WeightHistoryPage() {
       </Paper>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog
-        open={deleteDialog.open}
-        onClose={handleDeleteCancel}
-      >
+      <Dialog open={deleteDialog.open} onClose={handleDeleteCancel}>
         <DialogTitle>Delete Weight Entry?</DialogTitle>
         <DialogContent>
           <DialogContentText>

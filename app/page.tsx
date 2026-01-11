@@ -23,7 +23,14 @@ import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import { useAuth } from '@/contexts/AuthContext';
-import { getUserProfile, getLatestWeight, getTodayAndYesterdayWeight, getWeightEntries, getBodyMeasurements, getProgressMedia } from '@/lib/firestore';
+import {
+  getUserProfile,
+  getLatestWeight,
+  getTodayAndYesterdayWeight,
+  getWeightEntries,
+  getBodyMeasurements,
+  getProgressMedia,
+} from '@/lib/firestore';
 import { calculateBMI, calculateWeightChange } from '@/lib/utils';
 import type { User as UserProfile, WeightEntry } from '@/types';
 
@@ -79,8 +86,10 @@ export default function HomePage() {
       setTotalMeasurements(measurements.length);
       setTotalMedia(media.length);
 
-      if (comparison) {
-        setWeightComparison(calculateWeightChange(comparison.today, comparison.yesterday));
+      if (comparison.today && comparison.yesterday) {
+        setWeightComparison(
+          calculateWeightChange(comparison.today.weight, comparison.yesterday.weight)
+        );
       }
     } catch (error) {
       console.error('Error loading dashboard data:', error);
@@ -330,26 +339,17 @@ export default function HomePage() {
               <Box sx={{ mb: 4, textAlign: 'center' }}>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="center">
                   {totalEntries > 0 && (
-                    <Button
-                      variant="outlined"
-                      onClick={() => router.push('/weight/history')}
-                    >
+                    <Button variant="outlined" onClick={() => router.push('/weight/history')}>
                       View Weight History
                     </Button>
                   )}
                   {totalMeasurements > 0 && (
-                    <Button
-                      variant="outlined"
-                      onClick={() => router.push('/measurements/history')}
-                    >
+                    <Button variant="outlined" onClick={() => router.push('/measurements/history')}>
                       View Measurements History
                     </Button>
                   )}
                   {totalMedia > 0 && (
-                    <Button
-                      variant="outlined"
-                      onClick={() => router.push('/media')}
-                    >
+                    <Button variant="outlined" onClick={() => router.push('/media')}>
                       View Media Gallery
                     </Button>
                   )}
@@ -402,4 +402,3 @@ export default function HomePage() {
     </Box>
   );
 }
-

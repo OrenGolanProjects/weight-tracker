@@ -67,7 +67,7 @@ export default function ProfilePage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
     setError(null);
     setSuccess(false);
   };
@@ -121,7 +121,6 @@ export default function ProfilePage() {
       setTimeout(() => {
         router.push('/');
       }, 1500);
-
     } catch (err) {
       console.error('Error saving profile:', err);
       setError('Failed to save profile. Please try again.');
@@ -219,12 +218,7 @@ export default function ProfilePage() {
             {saving ? <CircularProgress size={24} /> : 'Save Profile'}
           </Button>
 
-          <Button
-            fullWidth
-            variant="outlined"
-            onClick={() => router.push('/')}
-            disabled={saving}
-          >
+          <Button fullWidth variant="outlined" onClick={() => router.push('/')} disabled={saving}>
             Cancel
           </Button>
         </Box>

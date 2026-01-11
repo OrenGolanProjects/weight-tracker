@@ -53,7 +53,7 @@ export default function EditMeasurementsPage() {
     try {
       setLoading(true);
       const measurements = await getBodyMeasurements(user.uid);
-      const measurement = measurements.find(m => m.id === measurementId);
+      const measurement = measurements.find((m) => m.id === measurementId);
 
       if (measurement) {
         setDate(dayjs(measurement.date.toDate()));
@@ -75,7 +75,7 @@ export default function EditMeasurementsPage() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
     setError(null);
     setSuccess(false);
   };
@@ -131,7 +131,6 @@ export default function EditMeasurementsPage() {
       setTimeout(() => {
         router.push('/measurements/history');
       }, 1000);
-
     } catch (err) {
       console.error('Error updating measurements:', err);
       setError('Failed to update measurements. Please try again.');
