@@ -36,6 +36,8 @@ import type { User as UserProfile, WeightEntry, BodyMeasurement } from '@/types'
 import WeightChart from '@/components/WeightChart';
 import BodyMeasurementsChart from '@/components/BodyMeasurementsChart';
 import GoalProgress from '@/components/GoalProgress';
+import WeightStatistics from '@/components/WeightStatistics';
+import BMITrendChart from '@/components/BMITrendChart';
 
 export default function HomePage() {
   const { user, loading, logout } = useAuth();
@@ -320,6 +322,13 @@ export default function HomePage() {
               </Box>
             )}
 
+            {/* Statistics & Analytics */}
+            {weightEntries.length > 0 && (
+              <Box sx={{ mb: 4 }}>
+                <WeightStatistics entries={weightEntries} />
+              </Box>
+            )}
+
             {/* Weight Progress Chart */}
             {weightEntries.length > 0 && (
               <Box sx={{ mb: 4 }}>
@@ -329,6 +338,24 @@ export default function HomePage() {
                 <Card>
                   <CardContent>
                     <WeightChart entries={weightEntries} height={350} />
+                  </CardContent>
+                </Card>
+              </Box>
+            )}
+
+            {/* BMI Trend Chart */}
+            {weightEntries.length > 0 && profile?.height && (
+              <Box sx={{ mb: 4 }}>
+                <Typography variant="h5" gutterBottom>
+                  BMI Trend
+                </Typography>
+                <Card>
+                  <CardContent>
+                    <BMITrendChart
+                      entries={weightEntries}
+                      height={profile.height}
+                      chartHeight={350}
+                    />
                   </CardContent>
                 </Card>
               </Box>
