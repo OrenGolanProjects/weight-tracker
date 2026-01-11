@@ -22,12 +22,15 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Stack,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
+import DownloadIcon from '@mui/icons-material/Download';
 import { useAuth } from '@/contexts/AuthContext';
 import { getBodyMeasurements, deleteBodyMeasurement } from '@/lib/firestore';
+import { exportBodyMeasurementsToCSV } from '@/lib/export';
 import type { BodyMeasurement } from '@/types';
 import BodyMeasurementsChart from '@/components/BodyMeasurementsChart';
 
@@ -99,6 +102,10 @@ export default function MeasurementsHistoryPage() {
     setDeleteDialog({ open: false, measurementId: null });
   };
 
+  const handleExport = () => {
+    exportBodyMeasurementsToCSV(measurements);
+  };
+
   const formatDate = (timestamp: { toDate?: () => Date } | Date | null | undefined) => {
     if (!timestamp) return 'N/A';
     const date =
@@ -135,13 +142,23 @@ export default function MeasurementsHistoryPage() {
           <Typography variant="h4" component="h1">
             Measurements History
           </Typography>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={() => router.push('/measurements/add')}
-          >
-            Add Entry
-          </Button>
+          <Stack direction="row" spacing={2}>
+            <Button
+              variant="outlined"
+              startIcon={<DownloadIcon />}
+              onClick={handleExport}
+              disabled={measurements.length === 0}
+            >
+              Export CSV
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={() => router.push('/measurements/add')}
+            >
+              Add Entry
+            </Button>
+          </Stack>
         </Box>
 
         {error && (

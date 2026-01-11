@@ -22,12 +22,15 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Stack,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
+import DownloadIcon from '@mui/icons-material/Download';
 import { useAuth } from '@/contexts/AuthContext';
 import { getWeightEntries, deleteWeightEntry } from '@/lib/firestore';
+import { exportWeightEntriesToCSV } from '@/lib/export';
 import type { WeightEntry } from '@/types';
 import WeightChart from '@/components/WeightChart';
 
@@ -97,6 +100,10 @@ export default function WeightHistoryPage() {
     setDeleteDialog({ open: false, entryId: null });
   };
 
+  const handleExport = () => {
+    exportWeightEntriesToCSV(entries);
+  };
+
   const formatDate = (timestamp: { toDate?: () => Date } | Date | null | undefined) => {
     if (!timestamp) return 'N/A';
     const date =
@@ -129,13 +136,23 @@ export default function WeightHistoryPage() {
           <Typography variant="h4" component="h1">
             Weight History
           </Typography>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={() => router.push('/weight/add')}
-          >
-            Add Entry
-          </Button>
+          <Stack direction="row" spacing={2}>
+            <Button
+              variant="outlined"
+              startIcon={<DownloadIcon />}
+              onClick={handleExport}
+              disabled={entries.length === 0}
+            >
+              Export CSV
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={() => router.push('/weight/add')}
+            >
+              Add Entry
+            </Button>
+          </Stack>
         </Box>
 
         {error && (

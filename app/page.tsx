@@ -22,6 +22,7 @@ import AddIcon from '@mui/icons-material/Add';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
+import DownloadIcon from '@mui/icons-material/Download';
 import { useAuth } from '@/contexts/AuthContext';
 import {
   getUserProfile,
@@ -32,6 +33,7 @@ import {
   getProgressMedia,
 } from '@/lib/firestore';
 import { calculateBMI, calculateWeightChange } from '@/lib/utils';
+import { exportSummaryReport } from '@/lib/export';
 import type { User as UserProfile, WeightEntry, BodyMeasurement } from '@/types';
 import WeightChart from '@/components/WeightChart';
 import BodyMeasurementsChart from '@/components/BodyMeasurementsChart';
@@ -126,6 +128,10 @@ export default function HomePage() {
     if (bmi < 25) return 'Normal';
     if (bmi < 30) return 'Overweight';
     return 'Obese';
+  };
+
+  const handleExportSummary = () => {
+    exportSummaryReport(profile, weightEntries, bodyMeasurements);
   };
 
   if (loading) {
@@ -413,6 +419,25 @@ export default function HomePage() {
                 </Button>
               </Stack>
             </Box>
+
+            {/* Export & Reports */}
+            {(weightEntries.length > 0 || bodyMeasurements.length > 0) && (
+              <Box sx={{ mb: 4 }}>
+                <Typography variant="h5" gutterBottom>
+                  Export & Reports
+                </Typography>
+                <Button
+                  variant="outlined"
+                  startIcon={<DownloadIcon />}
+                  size="large"
+                  sx={{ py: 2 }}
+                  onClick={handleExportSummary}
+                  fullWidth
+                >
+                  Export Summary Report
+                </Button>
+              </Box>
+            )}
 
             {/* View History Buttons */}
             {(totalEntries > 0 || totalMeasurements > 0 || totalMedia > 0) && (
