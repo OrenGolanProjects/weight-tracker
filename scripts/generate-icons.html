@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PWA Icon Generator</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 1000px;
+      margin: 50px auto;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    }
+    h1 {
+      color: #1976d2;
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+    }
+    button {
+      background: linear-gradient(135deg, #1976d2, #1565c0);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 8px;
+      margin: 10px 5px;
+      box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+      transition: all 0.3s;
+    }
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(25, 118, 210, 0.4);
+    }
+    .preview {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 30px;
+      margin: 30px 0;
+    }
+    .preview-item {
+      text-align: center;
+      background: #fafafa;
+      padding: 20px;
+      border-radius: 12px;
+      border: 2px solid #e0e0e0;
+    }
+    canvas {
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    .success {
+      background: linear-gradient(135deg, #4caf50, #45a049);
+      color: white;
+      padding: 16px;
+      border-radius: 8px;
+      margin: 20px 0;
+      display: none;
+      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    }
+    .label {
+      margin-top: 15px;
+      font-weight: 600;
+      color: #333;
+    }
+    .size-label {
+      font-size: 12px;
+      color: #999;
+      margin: 5px 0;
+    }
+    .download-btn {
+      background: linear-gradient(135deg, #4caf50, #45a049);
+      font-size: 13px;
+      padding: 8px 16px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎨 Weight Tracker PWA Icons</h1>
+    <p class="subtitle">Modern Glass Style - Transparent Background with Shiny Cyan</p>
+
+    <button onclick="generateIcons()">✨ Generate Icons</button>
+
+    <div id="success" class="success">
+      ✅ Icons generated! Click download buttons or right-click to save to public/ folder
+    </div>
+
+    <div class="preview" id="preview"></div>
+  </div>
+
+  <script>
+    function drawIcon(ctx, size) {
+      // Transparent background - no fill needed
+      ctx.clearRect(0, 0, size, size);
+
+      // Glass effect circle with shiny cyan
+      const centerX = size / 2;
+      const centerY = size / 2;
+      const radius = size * 0.35;
+
+      // Solid dark cyan circle background
+      ctx.fillStyle = '#1a2332';  // Dark blue-gray solid
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Glowing cyan border
+      ctx.strokeStyle = 'rgba(0, 229, 255, 0.8)';  // Bright cyan border
+      ctx.lineWidth = size * 0.015;
+      ctx.stroke();
+
+      // Add inner glow effect
+      ctx.strokeStyle = 'rgba(100, 255, 218, 0.4)';  // Teal glow
+      ctx.lineWidth = size * 0.008;
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, radius * 0.9, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // "WT" text in shiny cyan
+      ctx.fillStyle = '#00E5FF';  // Bright shiny cyan
+      ctx.font = `bold ${size * 0.22}px "Segoe UI", Arial, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('WT', centerX, centerY);
+
+      // Subtitle in lighter cyan/teal
+      ctx.fillStyle = '#64FFDA';  // Bright teal
+      ctx.font = `${size * 0.08}px "Segoe UI", Arial, sans-serif`;
+      ctx.fillText('TRACKER', centerX, centerY + size * 0.15);
+    }
+
+    function generateIcons() {
+      const preview = document.getElementById('preview');
+      preview.innerHTML = '';
+
+      const icons = [
+        { size: 192, name: 'icon-192x192.png' },
+        { size: 512, name: 'icon-512x512.png' },
+        { size: 32, name: 'favicon.ico' }
+      ];
+
+      icons.forEach(({ size, name }) => {
+        const canvas = document.createElement('canvas');
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+
+        // Draw modern glass icon
+        drawIcon(ctx, size);
+
+        // Create preview
+        const container = document.createElement('div');
+        container.className = 'preview-item';
+
+        const img = document.createElement('img');
+        img.src = canvas.toDataURL('image/png');
+        img.alt = name;
+        img.title = `Right-click to save as ${name}`;
+        img.style.width = Math.min(size, 200) + 'px';
+        img.style.height = Math.min(size, 200) + 'px';
+
+        const label = document.createElement('div');
+        label.className = 'label';
+        label.textContent = name;
+
+        const sizeLabel = document.createElement('div');
+        sizeLabel.className = 'size-label';
+        sizeLabel.textContent = `${size}x${size}px`;
+
+        const downloadBtn = document.createElement('button');
+        downloadBtn.className = 'download-btn';
+        downloadBtn.textContent = '⬇ Download';
+        downloadBtn.onclick = () => downloadImage(canvas, name);
+
+        container.appendChild(img);
+        container.appendChild(label);
+        container.appendChild(sizeLabel);
+        container.appendChild(downloadBtn);
+        preview.appendChild(container);
+      });
+
+      document.getElementById('success').style.display = 'block';
+    }
+
+    function downloadImage(canvas, filename) {
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    // Auto-generate on page load
+    window.onload = generateIcons;
+  </script>
+</body>
+</html>
