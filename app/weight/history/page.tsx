@@ -29,6 +29,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useAuth } from '@/contexts/AuthContext';
 import { getWeightEntries, deleteWeightEntry } from '@/lib/firestore';
 import type { WeightEntry } from '@/types';
+import WeightChart from '@/components/WeightChart';
 
 export default function WeightHistoryPage() {
   const { user, loading: authLoading } = useAuth();
@@ -160,47 +161,55 @@ export default function WeightHistoryPage() {
             </Button>
           </Box>
         ) : (
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>
-                    <strong>Date</strong>
-                  </TableCell>
-                  <TableCell align="right">
-                    <strong>Weight (kg)</strong>
-                  </TableCell>
-                  <TableCell align="center">
-                    <strong>Actions</strong>
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {entries.map((entry) => (
-                  <TableRow key={entry.id} hover>
-                    <TableCell>{formatDate(entry.date)}</TableCell>
-                    <TableCell align="right">{entry.weight.toFixed(1)}</TableCell>
+          <>
+            {/* Weight Progress Chart */}
+            <Box sx={{ mb: 4 }}>
+              <WeightChart entries={entries} height={300} />
+            </Box>
+
+            {/* Weight Entries Table */}
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>
+                      <strong>Date</strong>
+                    </TableCell>
+                    <TableCell align="right">
+                      <strong>Weight (kg)</strong>
+                    </TableCell>
                     <TableCell align="center">
-                      <IconButton
-                        color="primary"
-                        onClick={() => router.push(`/weight/edit/${entry.id}`)}
-                        title="Edit entry"
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton
-                        color="error"
-                        onClick={() => handleDeleteClick(entry.id)}
-                        title="Delete entry"
-                      >
-                        <DeleteIcon />
-                      </IconButton>
+                      <strong>Actions</strong>
                     </TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                </TableHead>
+                <TableBody>
+                  {entries.map((entry) => (
+                    <TableRow key={entry.id} hover>
+                      <TableCell>{formatDate(entry.date)}</TableCell>
+                      <TableCell align="right">{entry.weight.toFixed(1)}</TableCell>
+                      <TableCell align="center">
+                        <IconButton
+                          color="primary"
+                          onClick={() => router.push(`/weight/edit/${entry.id}`)}
+                          title="Edit entry"
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          color="error"
+                          onClick={() => handleDeleteClick(entry.id)}
+                          title="Delete entry"
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </>
         )}
 
         <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>

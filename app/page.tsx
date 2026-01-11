@@ -33,6 +33,7 @@ import {
 } from '@/lib/firestore';
 import { calculateBMI, calculateWeightChange } from '@/lib/utils';
 import type { User as UserProfile, WeightEntry } from '@/types';
+import WeightChart from '@/components/WeightChart';
 
 export default function HomePage() {
   const { user, loading, logout } = useAuth();
@@ -41,6 +42,7 @@ export default function HomePage() {
   const [dataLoading, setDataLoading] = useState(true);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [latestWeight, setLatestWeight] = useState<WeightEntry | null>(null);
+  const [weightEntries, setWeightEntries] = useState<WeightEntry[]>([]);
   const [weightComparison, setWeightComparison] = useState<{
     today: number;
     yesterday: number;
@@ -82,6 +84,7 @@ export default function HomePage() {
 
       setProfile(userProfile);
       setLatestWeight(latest);
+      setWeightEntries(entries);
       setTotalEntries(entries.length);
       setTotalMeasurements(measurements.length);
       setTotalMedia(media.length);
@@ -294,6 +297,20 @@ export default function HomePage() {
                 </Card>
               </Box>
             </Stack>
+
+            {/* Weight Progress Chart */}
+            {weightEntries.length > 0 && (
+              <Box sx={{ mb: 4 }}>
+                <Typography variant="h5" gutterBottom>
+                  Weight Progress
+                </Typography>
+                <Card>
+                  <CardContent>
+                    <WeightChart entries={weightEntries} height={350} />
+                  </CardContent>
+                </Card>
+              </Box>
+            )}
 
             {/* Quick Actions */}
             <Box sx={{ mb: 4 }}>
