@@ -11,6 +11,10 @@ export const metadata: Metadata = {
   title: 'Weight Tracker - Track Your Fitness Journey',
   description: 'Track your weight, body measurements, and progress with photos and videos',
   manifest: '/manifest.json',
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/icon-192x192.png',
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
@@ -22,7 +26,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
-  themeColor: '#1976d2',
+  themeColor: '#00E5FF',
 };
 
 export default function RootLayout({
