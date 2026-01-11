@@ -24,6 +24,7 @@ import {
   DialogActions,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import { useAuth } from '@/contexts/AuthContext';
 import { getWeightEntries, deleteWeightEntry } from '@/lib/firestore';
@@ -171,6 +172,13 @@ export default function WeightHistoryPage() {
                     <TableCell>{formatDate(entry.date)}</TableCell>
                     <TableCell align="right">{entry.weight.toFixed(1)}</TableCell>
                     <TableCell align="center">
+                      <IconButton
+                        color="primary"
+                        onClick={() => router.push(`/weight/edit/${entry.id}`)}
+                        title="Edit entry"
+                      >
+                        <EditIcon />
+                      </IconButton>
                       <IconButton
                         color="error"
                         onClick={() => handleDeleteClick(entry.id)}

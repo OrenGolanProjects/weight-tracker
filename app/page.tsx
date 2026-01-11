@@ -23,7 +23,7 @@ import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import { useAuth } from '@/contexts/AuthContext';
-import { getUserProfile, getLatestWeight, getTodayAndYesterdayWeight, getWeightEntries } from '@/lib/firestore';
+import { getUserProfile, getLatestWeight, getTodayAndYesterdayWeight, getWeightEntries, getBodyMeasurements } from '@/lib/firestore';
 import { calculateBMI, calculateWeightChange } from '@/lib/utils';
 import type { User as UserProfile, WeightEntry } from '@/types';
 
@@ -41,6 +41,7 @@ export default function HomePage() {
     status: 'Gain' | 'Loss' | 'Same';
   } | null>(null);
   const [totalEntries, setTotalEntries] = useState(0);
+  const [totalMeasurements, setTotalMeasurements] = useState(0);
 
   useEffect(() => {
     // Redirect to login if not authenticated
@@ -62,16 +63,18 @@ export default function HomePage() {
       setDataLoading(true);
 
       // Load all data in parallel
-      const [userProfile, latest, comparison, entries] = await Promise.all([
+      const [userProfile, latest, comparison, entries, measurements] = await Promise.all([
         getUserProfile(user.uid),
         getLatestWeight(user.uid),
         getTodayAndYesterdayWeight(user.uid),
         getWeightEntries(user.uid),
+        getBodyMeasurements(user.uid),
       ]);
 
       setProfile(userProfile);
       setLatestWeight(latest);
       setTotalEntries(entries.length);
+      setTotalMeasurements(measurements.length);
 
       if (comparison) {
         setWeightComparison(calculateWeightChange(comparison.today, comparison.yesterday));
@@ -318,15 +321,27 @@ export default function HomePage() {
               </Stack>
             </Box>
 
-            {/* View History Button */}
-            {totalEntries > 0 && (
+            {/* View History Buttons */}
+            {(totalEntries > 0 || totalMeasurements > 0) && (
               <Box sx={{ mb: 4, textAlign: 'center' }}>
-                <Button
-                  variant="outlined"
-                  onClick={() => router.push('/weight/history')}
-                >
-                  View Weight History
-                </Button>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="center">
+                  {totalEntries > 0 && (
+                    <Button
+                      variant="outlined"
+                      onClick={() => router.push('/weight/history')}
+                    >
+                      View Weight History
+                    </Button>
+                  )}
+                  {totalMeasurements > 0 && (
+                    <Button
+                      variant="outlined"
+                      onClick={() => router.push('/measurements/history')}
+                    >
+                      View Measurements History
+                    </Button>
+                  )}
+                </Stack>
               </Box>
             )}
 

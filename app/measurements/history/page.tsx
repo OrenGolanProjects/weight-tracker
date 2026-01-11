@@ -24,6 +24,7 @@ import {
   DialogActions,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import { useAuth } from '@/contexts/AuthContext';
 import { getBodyMeasurements, deleteBodyMeasurement } from '@/lib/firestore';
@@ -179,6 +180,13 @@ export default function MeasurementsHistoryPage() {
                     <TableCell align="right">{formatMeasurement(measurement.bicep)}</TableCell>
                     <TableCell align="right">{formatMeasurement(measurement.thigh)}</TableCell>
                     <TableCell align="center">
+                      <IconButton
+                        color="primary"
+                        onClick={() => router.push(`/measurements/edit/${measurement.id}`)}
+                        title="Edit measurement"
+                      >
+                        <EditIcon />
+                      </IconButton>
                       <IconButton
                         color="error"
                         onClick={() => handleDeleteClick(measurement.id)}
