@@ -15,7 +15,7 @@ import {
   serverTimestamp,
 } from 'firebase/firestore';
 import { db } from './firebase';
-import { User, WeightEntry, BodyMeasurement } from '@/types';
+import { User, WeightEntry, BodyMeasurement, ProgressMedia } from '@/types';
 
 // ==================== User Profile Operations ====================
 
@@ -311,6 +311,97 @@ export const deleteBodyMeasurement = async (
     await deleteDoc(doc(db, `users/${uid}/bodyMeasurements`, measurementId));
   } catch (error) {
     console.error('Error deleting body measurement:', error);
+    throw error;
+  }
+};
+
+// ==================== Progress Media Operations ====================
+
+/**
+ * Get all progress media for a user
+ */
+export const getProgressMedia = async (
+  uid: string,
+  type?: 'photo' | 'video',
+  limitCount: number = 100
+): Promise<ProgressMedia[]> => {
+  try {
+    let q;
+    if (type) {
+      q = query(
+        collection(db, `users/${uid}/progressMedia`),
+        where('type', '==', type),
+        orderBy('date', 'desc'),
+        limit(limitCount)
+      );
+    } else {
+      q = query(
+        collection(db, `users/${uid}/progressMedia`),
+        orderBy('date', 'desc'),
+        limit(limitCount)
+      );
+    }
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(
+      (doc) => ({ id: doc.id, ...doc.data() } as ProgressMedia)
+    );
+  } catch (error) {
+    console.error('Error getting progress media:', error);
+    throw error;
+  }
+};
+
+/**
+ * Add new progress media
+ */
+export const addProgressMedia = async (
+  uid: string,
+  data: {
+    date: Date;
+    type: 'photo' | 'video';
+    mediaUrl: string;
+    thumbnailUrl: string;
+    storagePath: string;
+    thumbnailPath?: string;
+    duration?: number;
+    fileSize: number;
+    weight?: number;
+    notes?: string;
+  }
+): Promise<string> => {
+  try {
+    const docRef = await addDoc(collection(db, `users/${uid}/progressMedia`), {
+      date: Timestamp.fromDate(data.date),
+      type: data.type,
+      mediaUrl: data.mediaUrl,
+      thumbnailUrl: data.thumbnailUrl,
+      storagePath: data.storagePath,
+      thumbnailPath: data.thumbnailPath || null,
+      duration: data.duration || null,
+      fileSize: data.fileSize,
+      weight: data.weight || null,
+      notes: data.notes || null,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+    return docRef.id;
+  } catch (error) {
+    console.error('Error adding progress media:', error);
+    throw error;
+  }
+};
+
+/**
+ * Delete progress media
+ */
+export const deleteProgressMedia = async (
+  uid: string,
+  mediaId: string
+): Promise<void> => {
+  try {
+    await deleteDoc(doc(db, `users/${uid}/progressMedia`, mediaId));
+  } catch (error) {
+    console.error('Error deleting progress media:', error);
     throw error;
   }
 };

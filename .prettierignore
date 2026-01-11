@@ -1,0 +1,32 @@
+# Dependencies
+node_modules
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Build outputs
+.next
+out
+dist
+build
+
+# Terraform
+terraform/.terraform
+*.tfstate
+*.tfstate.backup
+
+# Environment files
+.env
+.env.local
+.env*.local
+
+# Cache
+.cache
+.turbo
+
+# Misc
+.DS_Store
+*.log
+coverage
+.vscode
+.idea

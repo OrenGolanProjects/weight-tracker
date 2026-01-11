@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "type-check": "tsc --noEmit",
+    "format:check": "prettier --check .",
+    "ai-check": "pnpm run type-check && pnpm run build && pnpm run lint && pnpm run format:check"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -33,6 +36,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
+    "prettier": "^3.7.4",
     "typescript": "^5"
   }
 }
