@@ -302,6 +302,7 @@ export default function HomePage() {
                   startIcon={<AddIcon />}
                   size="large"
                   sx={{ py: 2 }}
+                  onClick={() => router.push('/measurements/add')}
                 >
                   Add Measurements
                 </Button>
