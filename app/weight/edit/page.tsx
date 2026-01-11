@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import React, { useEffect, useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Container,
   Paper,
@@ -19,11 +19,11 @@ import dayjs, { Dayjs } from 'dayjs';
 import { useAuth } from '@/contexts/AuthContext';
 import { getWeightEntries, updateWeightEntry } from '@/lib/firestore';
 
-export default function EditWeightPage() {
+function EditWeightContent() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
-  const params = useParams();
-  const entryId = params.id as string;
+  const searchParams = useSearchParams();
+  const entryId = searchParams.get('id');
 
   const [loading, setLoading] = useState(true);
   const [date, setDate] = useState<Dayjs | null>(dayjs());
@@ -38,13 +38,19 @@ export default function EditWeightPage() {
       return;
     }
 
+    if (!entryId) {
+      setError('No entry ID provided');
+      setLoading(false);
+      return;
+    }
+
     if (user && entryId) {
       loadEntry();
     }
   }, [user, authLoading, entryId, router]);
 
   const loadEntry = async () => {
-    if (!user) return;
+    if (!user || !entryId) return;
 
     try {
       setLoading(true);
@@ -67,7 +73,7 @@ export default function EditWeightPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
+    if (!user || !entryId) return;
 
     // Validation
     if (!date) {
@@ -204,5 +210,19 @@ export default function EditWeightPage() {
         </Box>
       </Paper>
     </Container>
+  );
+}
+
+export default function EditWeightPage() {
+  return (
+    <Suspense
+      fallback={
+        <Container maxWidth="sm" sx={{ mt: 8, display: 'flex', justifyContent: 'center' }}>
+          <CircularProgress />
+        </Container>
+      }
+    >
+      <EditWeightContent />
+    </Suspense>
   );
 }

@@ -208,7 +208,7 @@ export default function WeightHistoryPage() {
                       <TableCell align="center">
                         <IconButton
                           color="primary"
-                          onClick={() => router.push(`/weight/edit/${entry.id}`)}
+                          onClick={() => router.push(`/weight/edit?id=${entry.id}`)}
                           title="Edit entry"
                         >
                           <EditIcon />

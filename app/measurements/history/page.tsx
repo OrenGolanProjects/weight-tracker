@@ -222,7 +222,7 @@ export default function MeasurementsHistoryPage() {
                       <TableCell align="center">
                         <IconButton
                           color="primary"
-                          onClick={() => router.push(`/measurements/edit/${measurement.id}`)}
+                          onClick={() => router.push(`/measurements/edit?id=${measurement.id}`)}
                           title="Edit measurement"
                         >
                           <EditIcon />

@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import React, { useEffect, useState, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   Container,
   Paper,
@@ -19,11 +19,11 @@ import dayjs, { Dayjs } from 'dayjs';
 import { useAuth } from '@/contexts/AuthContext';
 import { getBodyMeasurements, updateBodyMeasurement } from '@/lib/firestore';
 
-export default function EditMeasurementsPage() {
+function EditMeasurementsContent() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
-  const params = useParams();
-  const measurementId = params.id as string;
+  const searchParams = useSearchParams();
+  const measurementId = searchParams.get('id');
 
   const [loading, setLoading] = useState(true);
   const [date, setDate] = useState<Dayjs | null>(dayjs());
@@ -42,13 +42,19 @@ export default function EditMeasurementsPage() {
       return;
     }
 
+    if (!measurementId) {
+      setError('No measurement ID provided');
+      setLoading(false);
+      return;
+    }
+
     if (user && measurementId) {
       loadMeasurement();
     }
   }, [user, authLoading, measurementId, router]);
 
   const loadMeasurement = async () => {
-    if (!user) return;
+    if (!user || !measurementId) return;
 
     try {
       setLoading(true);
@@ -82,7 +88,7 @@ export default function EditMeasurementsPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
+    if (!user || !measurementId) return;
 
     // Validation
     if (!date) {
@@ -267,5 +273,19 @@ export default function EditMeasurementsPage() {
         </Box>
       </Paper>
     </Container>
+  );
+}
+
+export default function EditMeasurementsPage() {
+  return (
+    <Suspense
+      fallback={
+        <Container maxWidth="sm" sx={{ mt: 8, display: 'flex', justifyContent: 'center' }}>
+          <CircularProgress />
+        </Container>
+      }
+    >
+      <EditMeasurementsContent />
+    </Suspense>
   );
 }

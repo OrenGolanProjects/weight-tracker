@@ -9,7 +9,11 @@
     "lint": "eslint",
     "type-check": "tsc --noEmit",
     "format:check": "prettier --check .",
-    "ai-check": "pnpm run type-check && pnpm run build && pnpm run lint && pnpm run format:check"
+    "ai-check": "pnpm run type-check && pnpm run build && pnpm run lint && pnpm run format:check",
+    "export": "next build",
+    "deploy": "pnpm run export && firebase deploy --only hosting",
+    "deploy:preview": "pnpm run export && firebase hosting:channel:deploy preview",
+    "deploy:full": "pnpm run export && firebase deploy"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
