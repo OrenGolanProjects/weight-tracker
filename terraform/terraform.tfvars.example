@@ -1,0 +1,7 @@
+# Copy this file to terraform.tfvars and fill in your values
+# DO NOT commit terraform.tfvars to git (it's in .gitignore)
+
+project_id  = "your-project-id-here"  # e.g., "weight-tracker-12345"
+region      = "us-central1"
+environment = "dev"
+app_name    = "weight-tracker"
