@@ -1,0 +1,52 @@
+{
+  "name": "Weight Tracker - Fitness Journey",
+  "short_name": "Weight Tracker",
+  "description": "Track your weight, body measurements, and fitness progress with comprehensive analytics and photo comparisons",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1976d2",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "categories": ["health", "fitness", "lifestyle"],
+  "shortcuts": [
+    {
+      "name": "Add Weight",
+      "short_name": "Add Weight",
+      "description": "Quickly add a new weight entry",
+      "url": "/weight/add",
+      "icons": [
+        {
+          "src": "/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Add Measurements",
+      "short_name": "Measurements",
+      "description": "Add body measurements",
+      "url": "/measurements/add",
+      "icons": [
+        {
+          "src": "/icon-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}
