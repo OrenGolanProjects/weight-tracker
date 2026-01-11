@@ -4,6 +4,7 @@ import {
   getDoc,
   getDocs,
   addDoc,
+  setDoc,
   updateDoc,
   deleteDoc,
   query,
@@ -42,7 +43,7 @@ export const createUserProfile = async (
   data: Partial<User>
 ): Promise<void> => {
   try {
-    await updateDoc(doc(db, 'users', uid), {
+    await setDoc(doc(db, 'users', uid), {
       ...data,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),

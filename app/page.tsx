@@ -71,11 +71,17 @@ export default function HomePage() {
           </Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Typography variant="body2">{user.email}</Typography>
-            <Avatar
-              src={user.photoURL || ''}
-              alt={user.displayName || 'User'}
-              sx={{ width: 32, height: 32 }}
-            />
+            <IconButton
+              onClick={() => router.push('/profile')}
+              title="Edit Profile"
+              sx={{ p: 0.5 }}
+            >
+              <Avatar
+                src={user.photoURL || ''}
+                alt={user.displayName || 'User'}
+                sx={{ width: 32, height: 32 }}
+              />
+            </IconButton>
             <IconButton color="inherit" onClick={handleLogout} title="Logout">
               <LogoutIcon />
             </IconButton>
