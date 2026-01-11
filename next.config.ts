@@ -6,6 +6,6 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
   trailingSlash: true,
-}
+};
 
 export default nextConfig;

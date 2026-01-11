@@ -5,6 +5,7 @@ This guide covers deploying the Weight Tracker app to Firebase Hosting.
 ## Prerequisites
 
 1. **Firebase CLI**: Install Firebase CLI globally
+
    ```bash
    npm install -g firebase-tools
    ```
@@ -12,14 +13,17 @@ This guide covers deploying the Weight Tracker app to Firebase Hosting.
 2. **Firebase Project**: Ensure you have a Firebase project created at [Firebase Console](https://console.firebase.google.com)
 
 3. **Firebase Login**: Authenticate with Firebase
+
    ```bash
    firebase login
    ```
 
 4. **Firebase Project Initialization**: If not already initialized, run:
+
    ```bash
    firebase init
    ```
+
    - Select: Hosting, Firestore, Storage
    - Use existing project
    - Public directory: `out`
@@ -72,27 +76,35 @@ The app is configured for static export in `next.config.ts`:
 The following scripts are available in `package.json`:
 
 ### 1. Build Static Export
+
 ```bash
 pnpm run export
 ```
+
 Creates a static build in the `out/` directory.
 
 ### 2. Deploy to Production
+
 ```bash
 pnpm run deploy
 ```
+
 Builds and deploys to your Firebase Hosting production site.
 
 ### 3. Deploy to Preview Channel
+
 ```bash
 pnpm run deploy:preview
 ```
+
 Builds and deploys to a preview channel for testing before production.
 
 ### 4. Deploy All Firebase Services
+
 ```bash
 pnpm run deploy:full
 ```
+
 Builds and deploys hosting + updates Firestore rules and Storage rules.
 
 ## Step-by-Step Deployment
@@ -100,9 +112,11 @@ Builds and deploys hosting + updates Firestore rules and Storage rules.
 ### First Time Deployment
 
 1. **Verify Firebase configuration**
+
    ```bash
    firebase projects:list
    ```
+
    Ensure you're connected to the correct project.
 
 2. **Set up environment variables**
@@ -110,18 +124,23 @@ Builds and deploys hosting + updates Firestore rules and Storage rules.
    - Verify variables are prefixed with `NEXT_PUBLIC_`
 
 3. **Test the build locally**
+
    ```bash
    pnpm run export
    ```
+
    Check the `out/` directory for generated files.
 
 4. **Preview locally** (optional)
+
    ```bash
    firebase serve
    ```
+
    Opens local preview at http://localhost:5000
 
 5. **Deploy to production**
+
    ```bash
    pnpm run deploy
    ```
@@ -165,31 +184,35 @@ The `firebase.json` file configures hosting behavior:
 ```json
 {
   "hosting": {
-    "public": "out",              // Next.js export directory
-    "cleanUrls": true,            // Remove .html from URLs
-    "trailingSlash": true,        // Add trailing slash to URLs
+    "public": "out", // Next.js export directory
+    "cleanUrls": true, // Remove .html from URLs
+    "trailingSlash": true, // Add trailing slash to URLs
     "rewrites": [
       {
         "source": "**",
-        "destination": "/index.html"  // SPA routing
+        "destination": "/index.html" // SPA routing
       }
     ],
     "headers": [
       // Cache static assets for 1 year
       {
         "source": "**/*.@(jpg|jpeg|gif|png|svg|webp|ico|js|css)",
-        "headers": [{
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000, immutable"
-        }]
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=31536000, immutable"
+          }
+        ]
       },
       // Don't cache service worker
       {
         "source": "/sw.js",
-        "headers": [{
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }]
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=0, must-revalidate"
+          }
+        ]
       }
     ]
   }
@@ -220,17 +243,20 @@ The service worker (`public/sw.js`) will automatically register on production bu
 The app includes security rules for Firestore and Storage:
 
 ### Firestore Rules (`firestore.rules`)
+
 - User profiles: Read/write own profile only
 - Weight entries: Read/write own entries only
 - Body measurements: Read/write own measurements only
 - Progress media: Read/write own media only
 
 ### Storage Rules (`storage.rules`)
+
 - Images: Authenticated users can upload to their own folder
 - File size limit: 10MB per file
 - Allowed types: Images and videos
 
 To deploy rule updates:
+
 ```bash
 pnpm run deploy:full
 ```
@@ -240,6 +266,7 @@ pnpm run deploy:full
 ### Build Fails
 
 **Error**: Module not found or TypeScript errors
+
 ```bash
 # Clear cache and reinstall
 rm -rf .next out node_modules
@@ -248,6 +275,7 @@ pnpm run ai-check
 ```
 
 **Error**: Environment variables not found
+
 - Verify `.env.production.local` exists
 - Check all variables are prefixed with `NEXT_PUBLIC_`
 - Rebuild after adding variables
@@ -255,12 +283,14 @@ pnpm run ai-check
 ### Deployment Fails
 
 **Error**: "Firebase project not found"
+
 ```bash
 firebase use --add
 # Select your project from the list
 ```
 
 **Error**: "Permission denied"
+
 ```bash
 firebase login --reauth
 ```
@@ -268,15 +298,18 @@ firebase login --reauth
 ### Runtime Errors After Deploy
 
 **Error**: Firebase not initialized
+
 - Verify environment variables are set in `.env.production.local`
 - Check Firebase config in browser DevTools console
 - Ensure build included the environment variables
 
 **Error**: 404 on page refresh
+
 - Verify rewrites are configured in `firebase.json`
 - Check `trailingSlash: true` in both `next.config.ts` and `firebase.json`
 
 **Error**: Images not loading
+
 - Images must be in `public/` directory
 - Use `unoptimized: true` in `next.config.ts`
 - Check browser console for CORS errors
@@ -284,11 +317,13 @@ firebase login --reauth
 ### Service Worker Issues
 
 **Error**: Service worker not registering
+
 - Only registers in production mode
 - Check browser console for registration errors
 - Verify `sw.js` is in `public/` directory
 
 **Error**: Old version cached
+
 ```bash
 # Clear browser cache and service worker
 # Chrome DevTools > Application > Clear storage > Clear site data
@@ -309,6 +344,7 @@ To use a custom domain:
 ### Firebase Console
 
 Monitor your deployment at [Firebase Console](https://console.firebase.google.com):
+
 - **Hosting**: View deployment history, traffic, and domain settings
 - **Authentication**: Monitor user sign-ups and authentication methods
 - **Firestore**: View database usage and query performance
@@ -317,6 +353,7 @@ Monitor your deployment at [Firebase Console](https://console.firebase.google.co
 ### Performance Monitoring (Optional)
 
 Add Firebase Performance Monitoring:
+
 ```bash
 pnpm add firebase
 ```
@@ -326,6 +363,7 @@ pnpm add firebase
 For automated deployments with GitHub Actions:
 
 1. Generate Firebase token:
+
    ```bash
    firebase login:ci
    ```
@@ -394,6 +432,7 @@ Before going live:
 ## Support
 
 For issues or questions:
+
 - Check Firebase documentation: https://firebase.google.com/docs
 - Review Next.js static export docs: https://nextjs.org/docs/app/building-your-application/deploying/static-exports
 - Check GitHub issues for this project
