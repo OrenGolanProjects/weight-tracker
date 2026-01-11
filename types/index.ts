@@ -7,6 +7,7 @@ export interface User {
   name: string | null;
   age: number | null;
   height: number | null; // in cm
+  goalWeight: number | null; // in kg
   photoURL: string | null;
   createdAt: Timestamp;
   updatedAt: Timestamp;

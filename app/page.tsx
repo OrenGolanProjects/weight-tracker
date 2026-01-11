@@ -35,6 +35,7 @@ import { calculateBMI, calculateWeightChange } from '@/lib/utils';
 import type { User as UserProfile, WeightEntry, BodyMeasurement } from '@/types';
 import WeightChart from '@/components/WeightChart';
 import BodyMeasurementsChart from '@/components/BodyMeasurementsChart';
+import GoalProgress from '@/components/GoalProgress';
 
 export default function HomePage() {
   const { user, loading, logout } = useAuth();
@@ -300,6 +301,24 @@ export default function HomePage() {
                 </Card>
               </Box>
             </Stack>
+
+            {/* Goal Progress */}
+            {latestWeight && profile?.goalWeight && (
+              <Box sx={{ mb: 4 }}>
+                <Typography variant="h5" gutterBottom>
+                  Weight Goal
+                </Typography>
+                <GoalProgress
+                  currentWeight={latestWeight.weight}
+                  goalWeight={profile.goalWeight}
+                  startWeight={
+                    weightEntries.length > 0
+                      ? weightEntries[weightEntries.length - 1].weight
+                      : undefined
+                  }
+                />
+              </Box>
+            )}
 
             {/* Weight Progress Chart */}
             {weightEntries.length > 0 && (

@@ -30,6 +30,7 @@ export default function ProfilePage() {
     name: '',
     age: '',
     height: '',
+    goalWeight: '',
   });
 
   useEffect(() => {
@@ -55,6 +56,7 @@ export default function ProfilePage() {
           name: profile.name || '',
           age: profile.age ? profile.age.toString() : '',
           height: profile.height ? profile.height.toString() : '',
+          goalWeight: profile.goalWeight ? profile.goalWeight.toString() : '',
         });
       }
     } catch (err) {
@@ -94,6 +96,16 @@ export default function ProfilePage() {
       return;
     }
 
+    // Goal weight is optional
+    let goalWeight: number | null = null;
+    if (formData.goalWeight) {
+      goalWeight = parseFloat(formData.goalWeight);
+      if (isNaN(goalWeight) || goalWeight < 30 || goalWeight > 500) {
+        setError('Please enter a valid goal weight in kg (30-500)');
+        return;
+      }
+    }
+
     try {
       setSaving(true);
       setError(null);
@@ -103,6 +115,7 @@ export default function ProfilePage() {
         name: formData.name.trim(),
         age,
         height,
+        goalWeight,
         photoURL: user.photoURL || null,
       };
 
@@ -205,6 +218,22 @@ export default function ProfilePage() {
             }}
             inputProps={{ min: 50, max: 300, step: 0.1 }}
             helperText="Enter your height in centimeters"
+          />
+
+          <TextField
+            fullWidth
+            type="number"
+            label="Goal Weight (Optional)"
+            name="goalWeight"
+            value={formData.goalWeight}
+            onChange={handleChange}
+            margin="normal"
+            disabled={saving}
+            InputProps={{
+              endAdornment: <InputAdornment position="end">kg</InputAdornment>,
+            }}
+            inputProps={{ min: 30, max: 500, step: 0.1 }}
+            helperText="Set your target weight goal"
           />
 
           <Button
