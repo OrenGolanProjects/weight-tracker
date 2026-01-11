@@ -335,49 +335,63 @@ export default function HomePage() {
               </Box>
             )}
 
-            {/* Weight Progress Chart */}
-            {weightEntries.length > 0 && (
+            {/* Charts Section - 3 in a row */}
+            {(weightEntries.length > 0 || bodyMeasurements.length > 0) && (
               <Box sx={{ mb: 4 }}>
-                <Typography variant="h5" gutterBottom>
-                  Weight Progress
+                <Typography variant="h5" gutterBottom sx={{ mb: 2 }}>
+                  Progress Charts
                 </Typography>
-                <Card>
-                  <CardContent>
-                    <WeightChart entries={weightEntries} height={350} />
-                  </CardContent>
-                </Card>
-              </Box>
-            )}
+                <Stack
+                  direction={{ xs: 'column', md: 'row' }}
+                  spacing={2}
+                  sx={{ flexWrap: 'wrap' }}
+                >
+                  {/* Weight Progress Chart */}
+                  {weightEntries.length > 0 && (
+                    <Box sx={{ flex: { xs: '1 1 100%', md: '1 1 32%' } }}>
+                      <Card sx={{ height: '100%' }}>
+                        <CardContent>
+                          <Typography variant="h6" gutterBottom sx={{ fontSize: '1rem' }}>
+                            Weight Progress
+                          </Typography>
+                          <WeightChart entries={weightEntries} height={250} />
+                        </CardContent>
+                      </Card>
+                    </Box>
+                  )}
 
-            {/* BMI Trend Chart */}
-            {weightEntries.length > 0 && profile?.height && (
-              <Box sx={{ mb: 4 }}>
-                <Typography variant="h5" gutterBottom>
-                  BMI Trend
-                </Typography>
-                <Card>
-                  <CardContent>
-                    <BMITrendChart
-                      entries={weightEntries}
-                      height={profile.height}
-                      chartHeight={350}
-                    />
-                  </CardContent>
-                </Card>
-              </Box>
-            )}
+                  {/* BMI Trend Chart */}
+                  {weightEntries.length > 0 && profile?.height && (
+                    <Box sx={{ flex: { xs: '1 1 100%', md: '1 1 32%' } }}>
+                      <Card sx={{ height: '100%' }}>
+                        <CardContent>
+                          <Typography variant="h6" gutterBottom sx={{ fontSize: '1rem' }}>
+                            BMI Trend
+                          </Typography>
+                          <BMITrendChart
+                            entries={weightEntries}
+                            height={profile.height}
+                            chartHeight={250}
+                          />
+                        </CardContent>
+                      </Card>
+                    </Box>
+                  )}
 
-            {/* Body Measurements Chart */}
-            {bodyMeasurements.length > 0 && (
-              <Box sx={{ mb: 4 }}>
-                <Typography variant="h5" gutterBottom>
-                  Body Measurements Progress
-                </Typography>
-                <Card>
-                  <CardContent>
-                    <BodyMeasurementsChart measurements={bodyMeasurements} height={350} />
-                  </CardContent>
-                </Card>
+                  {/* Body Measurements Chart */}
+                  {bodyMeasurements.length > 0 && (
+                    <Box sx={{ flex: { xs: '1 1 100%', md: '1 1 32%' } }}>
+                      <Card sx={{ height: '100%' }}>
+                        <CardContent>
+                          <Typography variant="h6" gutterBottom sx={{ fontSize: '1rem' }}>
+                            Body Measurements
+                          </Typography>
+                          <BodyMeasurementsChart measurements={bodyMeasurements} height={250} />
+                        </CardContent>
+                      </Card>
+                    </Box>
+                  )}
+                </Stack>
               </Box>
             )}
 

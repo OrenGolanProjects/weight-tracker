@@ -1,11 +1,13 @@
 # Weight Tracking SSO App - Implementation Plan
 
 ## Project Overview
+
 A serverless weight and body measurement tracking application with Google SSO authentication.
 
 ## 📊 Current Progress Status
 
 ### ✅ COMPLETED (100% of MVP + Enhanced Features)
+
 - **Phase 1:** Project Setup with Next.js 16, TypeScript, MUI, pnpm ✅
 - **Phase 2:** Terraform Infrastructure Setup ✅
 - **Phase 3:** Firebase Project Provisioning ✅
@@ -25,6 +27,7 @@ A serverless weight and body measurement tracking application with Google SSO au
 - **Phase 17:** Deployment to Firebase Hosting ✅
 
 ### 🎉 ENHANCED FEATURES COMPLETED
+
 - ✅ **Goals & Targets:** Set and track weight goals with progress visualization
 - ✅ **Statistics & Analytics:** BMI trend charts, weight statistics cards
 - ✅ **Compare Progress Photos:** Side-by-side photo comparison with metadata
@@ -33,6 +36,7 @@ A serverless weight and body measurement tracking application with Google SSO au
 - ✅ **Firebase Hosting Deployment:** Static export with SPA routing
 
 ### 🚀 LIVE AND DEPLOYED
+
 - **Production:** https://weight-tracker-7e67f.web.app ✅
 - **Local Dev:** http://localhost:3000 ✅
 - **User:** orenuki@gmail.com ✅
@@ -44,6 +48,7 @@ A serverless weight and body measurement tracking application with Google SSO au
 ## Tech Stack
 
 ### Frontend
+
 - **Framework:** Next.js 16.1.1 (App Router with TypeScript)
 - **Package Manager:** pnpm 10.18.3
 - **Styling:** Material-UI (MUI) v7.3.7
@@ -54,12 +59,14 @@ A serverless weight and body measurement tracking application with Google SSO au
 - **Date Handling:** @mui/x-date-pickers v8.24.0 + dayjs v1.11.19
 
 ### Backend & Database
+
 - **Database:** Firebase Firestore (NoSQL) - Firebase SDK v12.7.0
 - **Authentication:** Firebase Authentication with Google OAuth
 - **Storage:** Firebase Storage (for progress photos - 5 GB FREE)
 - **Image Processing:** browser-image-compression v2.0.2
 
 ### Deployment
+
 - **Platform:** Firebase Hosting (100% FREE) - DEPLOYED ✅
 - **Build:** Next.js Static Export
 - **URL:** https://weight-tracker-7e67f.web.app
@@ -71,6 +78,7 @@ A serverless weight and body measurement tracking application with Google SSO au
 ## All Completed Features
 
 ### ✅ Core Features (MVP)
+
 1. **Authentication**
    - Google OAuth sign-in
    - Protected routes
@@ -197,6 +205,7 @@ A serverless weight and body measurement tracking application with Google SSO au
 ## Database Schema (Firestore Collections)
 
 ### Users Collection: `users/{userId}`
+
 ```typescript
 {
   uid: string,              // Firebase Auth UID
@@ -211,6 +220,7 @@ A serverless weight and body measurement tracking application with Google SSO au
 ```
 
 ### WeightEntries SubCollection: `users/{userId}/weightEntries/{entryId}`
+
 ```typescript
 {
   id: string,               // Auto-generated document ID
@@ -222,6 +232,7 @@ A serverless weight and body measurement tracking application with Google SSO au
 ```
 
 ### BodyMeasurements SubCollection: `users/{userId}/bodyMeasurements/{measurementId}`
+
 ```typescript
 {
   id: string,
@@ -235,6 +246,7 @@ A serverless weight and body measurement tracking application with Google SSO au
 ```
 
 ### ProgressMedia SubCollection: `users/{userId}/progressMedia/{mediaId}`
+
 ```typescript
 {
   id: string,
@@ -253,6 +265,7 @@ A serverless weight and body measurement tracking application with Google SSO au
 ```
 
 ### Goals SubCollection: `users/{userId}/goals/{goalId}`
+
 ```typescript
 {
   id: string,
@@ -336,6 +349,7 @@ weight-tracker/
 ## Deployment Information
 
 ### Firebase Hosting (Production)
+
 - **URL:** https://weight-tracker-7e67f.web.app
 - **Status:** LIVE ✅
 - **Build:** Static export (Next.js 16)
@@ -343,6 +357,7 @@ weight-tracker/
 - **SSL:** Enabled (automatic)
 
 ### Deployment Commands
+
 ```bash
 # Build and deploy
 pnpm run deploy
@@ -355,6 +370,7 @@ pnpm run deploy:full
 ```
 
 ### Environment Setup
+
 ```bash
 # Development
 .env.local (Firebase dev credentials)
@@ -368,6 +384,7 @@ pnpm run deploy:full
 ## Firebase Free Tier Usage
 
 ### Current Usage (Estimated)
+
 - **Firestore:**
   - Storage: < 1% (few KB of ~1 GB)
   - Reads: < 1% (minimal of 50,000/day)
@@ -392,42 +409,49 @@ pnpm run deploy:full
 ## Key Features Showcase
 
 ### 1. Authentication Flow
+
 - Google OAuth sign-in
 - Automatic redirect to dashboard
 - Protected routes
 - Persistent sessions
 
 ### 2. Weight Management
+
 - Quick add from dashboard
 - Complete CRUD operations
 - Weight history with trends
 - Export to CSV
 
 ### 3. Body Measurements
+
 - Track waist, bicep, thigh
 - Monthly tracking
 - Edit/delete capabilities
 - Export to CSV
 
 ### 4. Progress Photos & Videos
+
 - Upload and compress
 - Gallery view with filters
 - Side-by-side comparison
 - Weight correlation
 
 ### 5. Goals System
+
 - Set target weight and date
 - Visual progress tracking
 - Days remaining countdown
 - Editable goals
 
 ### 6. Analytics Dashboard
+
 - BMI calculations
 - Weight trends
 - Statistical summaries
 - Visual charts
 
 ### 7. PWA Capabilities
+
 - Install on mobile
 - Offline access
 - Custom app icon
@@ -438,6 +462,7 @@ pnpm run deploy:full
 ## Next Steps (Optional Enhancements)
 
 ### Potential Future Features
+
 - [ ] Dark mode toggle
 - [ ] Multiple user profiles (family)
 - [ ] Nutrition tracking
@@ -452,6 +477,7 @@ pnpm run deploy:full
 - [ ] More export formats (PDF, JSON)
 
 ### Infrastructure Improvements
+
 - [ ] CI/CD with GitHub Actions
 - [ ] Automated testing
 - [ ] Performance monitoring
@@ -465,7 +491,9 @@ pnpm run deploy:full
 ## 🎉 Project Summary
 
 ### What Was Built
+
 A **complete, production-ready weight tracking application** with:
+
 - Full authentication system
 - Comprehensive data tracking (weight, measurements, media)
 - Advanced analytics and goals
@@ -475,6 +503,7 @@ A **complete, production-ready weight tracking application** with:
 - Deployed and live on Firebase
 
 ### Technology Stack
+
 - Next.js 16 (TypeScript, App Router)
 - Material-UI v7
 - Firebase (Auth, Firestore, Storage, Hosting)
@@ -482,12 +511,15 @@ A **complete, production-ready weight tracking application** with:
 - Progressive Web App
 
 ### Deployment Status
+
 ✅ **LIVE:** https://weight-tracker-7e67f.web.app
 
 ### Cost
+
 **$0/month** - Entirely on Firebase free tier
 
 ### Time to Build
+
 - Infrastructure: 1 day
 - Core features: 2-3 days
 - Enhanced features: 1-2 days
@@ -499,6 +531,7 @@ A **complete, production-ready weight tracking application** with:
 ## Lessons Learned
 
 ### What Worked Well
+
 1. **Firebase Integration:** Seamless auth, database, and storage
 2. **Material-UI:** Fast UI development with pre-built components
 3. **Next.js App Router:** Clean structure with TypeScript
@@ -506,6 +539,7 @@ A **complete, production-ready weight tracking application** with:
 5. **PWA Support:** Easy to implement with manual approach
 
 ### Challenges Overcome
+
 1. **MUI v7 Migration:** Adjusted Grid usage for v7 compatibility
 2. **Dynamic Routes:** Refactored to search params for static export
 3. **PWA Configuration:** Manual implementation after next-pwa conflict
@@ -513,6 +547,7 @@ A **complete, production-ready weight tracking application** with:
 5. **CORS Issues:** Configured Firebase Storage rules properly
 
 ### Best Practices Followed
+
 1. TypeScript strict mode
 2. Component-based architecture
 3. Security rules (Firestore + Storage)
