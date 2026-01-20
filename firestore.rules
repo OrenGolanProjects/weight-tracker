@@ -20,6 +20,11 @@ service cloud.firestore {
       match /progressMedia/{mediaId} {
         allow read, write: if request.auth != null && request.auth.uid == userId;
       }
+
+      // Documents subcollection (training plans, diet plans, custom files)
+      match /documents/{documentId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
     }
   }
 }

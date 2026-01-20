@@ -20,5 +20,21 @@ service firebase.storage {
                    && request.resource.size < 100 * 1024 * 1024
                    && request.resource.contentType.matches('video/.*');
     }
+
+    // User documents - training plans, diet plans, custom files
+    match /users/{userId}/documents/{allPaths=**} {
+      // Users can only access their own documents
+      allow read: if request.auth != null && request.auth.uid == userId;
+
+      // Documents: max 10MB, allowed types: PDF, DOC, DOCX, TXT, images
+      allow write: if request.auth != null
+                   && request.auth.uid == userId
+                   && request.resource.size < 10 * 1024 * 1024
+                   && (request.resource.contentType == 'application/pdf'
+                       || request.resource.contentType == 'application/msword'
+                       || request.resource.contentType == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                       || request.resource.contentType == 'text/plain'
+                       || request.resource.contentType.matches('image/.*'));
+    }
   }
 }

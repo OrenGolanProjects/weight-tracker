@@ -146,3 +146,32 @@ export interface WeightComparison {
   percentageChange: number;
   status: 'Gain' | 'Loss' | 'Same';
 }
+
+// Document Types
+export type DocumentType = 'training_plan' | 'diet_plan' | 'custom';
+
+// Document (Training Plans, Diet Plans, Custom Files)
+export interface Document {
+  id: string;
+  name: string;
+  type: DocumentType;
+  fileUrl: string;
+  storagePath: string;
+  fileSize: number; // in bytes
+  mimeType: string; // application/pdf, image/jpeg, etc.
+  date: Timestamp;
+  notes: string | null;
+  pinToHome: boolean; // Flag to show on dashboard
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
+
+// Document Form
+export interface DocumentForm {
+  name: string;
+  type: DocumentType;
+  file: File;
+  date: Date;
+  notes?: string;
+  pinToHome?: boolean;
+}

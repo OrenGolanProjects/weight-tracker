@@ -149,3 +149,77 @@ export const getVideoDuration = (file: File): Promise<number> => {
     video.src = URL.createObjectURL(file);
   });
 };
+
+/**
+ * Upload document to Firebase Storage
+ * @param userId - User ID
+ * @param file - Document file (PDF, DOC, images, etc.)
+ * @param documentId - Unique ID for the document
+ * @returns Object with document URL and storage path
+ */
+export const uploadDocument = async (
+  userId: string,
+  file: File,
+  documentId: string
+): Promise<{
+  fileUrl: string;
+  storagePath: string;
+  fileSize: number;
+  mimeType: string;
+}> => {
+  try {
+    // Check file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      throw new Error('Document file size must be less than 10MB');
+    }
+
+    // Validate file type
+    const allowedTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'text/plain',
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+      'image/webp',
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      throw new Error('Invalid file type. Allowed: PDF, DOC, DOCX, TXT, JPG, PNG, GIF, WEBP');
+    }
+
+    // Get file extension
+    const extension = file.name.split('.').pop()?.toLowerCase() || 'file';
+
+    // Upload document
+    const storagePath = `users/${userId}/documents/${documentId}.${extension}`;
+    const fileRef = ref(storage, storagePath);
+    await uploadBytes(fileRef, file);
+    const fileUrl = await getDownloadURL(fileRef);
+
+    return {
+      fileUrl,
+      storagePath,
+      fileSize: file.size,
+      mimeType: file.type,
+    };
+  } catch (error) {
+    console.error('Error uploading document:', error);
+    throw error;
+  }
+};
+
+/**
+ * Delete document from Firebase Storage
+ * @param storagePath - Path to the document in storage
+ */
+export const deleteDocumentFile = async (storagePath: string): Promise<void> => {
+  try {
+    const fileRef = ref(storage, storagePath);
+    await deleteObject(fileRef);
+  } catch (error) {
+    console.error('Error deleting document:', error);
+    throw error;
+  }
+};

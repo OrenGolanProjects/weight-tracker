@@ -29,6 +29,14 @@ import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import DownloadIcon from '@mui/icons-material/Download';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import FitnessCenterOutlinedIcon from '@mui/icons-material/FitnessCenterOutlined';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
+import DescriptionIcon from '@mui/icons-material/Description';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import ArticleIcon from '@mui/icons-material/Article';
+import ImageIcon from '@mui/icons-material/Image';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import PushPinIcon from '@mui/icons-material/PushPin';
 import { useAuth } from '@/contexts/AuthContext';
 import {
   getUserProfile,
@@ -37,10 +45,17 @@ import {
   getWeightEntries,
   getBodyMeasurements,
   getProgressMedia,
+  getPinnedDocuments,
 } from '@/lib/firestore';
 import { calculateBMI, calculateWeightChange } from '@/lib/utils';
 import { exportSummaryReport } from '@/lib/export';
-import type { User as UserProfile, WeightEntry, BodyMeasurement } from '@/types';
+import type {
+  User as UserProfile,
+  WeightEntry,
+  BodyMeasurement,
+  Document,
+  DocumentType,
+} from '@/types';
 import WeightChart from '@/components/WeightChart';
 import BodyMeasurementsChart from '@/components/BodyMeasurementsChart';
 import GoalProgress from '@/components/GoalProgress';
@@ -65,6 +80,7 @@ export default function HomePage() {
   const [totalEntries, setTotalEntries] = useState(0);
   const [totalMeasurements, setTotalMeasurements] = useState(0);
   const [totalMedia, setTotalMedia] = useState(0);
+  const [pinnedDocuments, setPinnedDocuments] = useState<Document[]>([]);
 
   // Refs for scroll navigation
   const historyRef = useRef<HTMLDivElement>(null);
@@ -105,14 +121,16 @@ export default function HomePage() {
       setDataLoading(true);
 
       // Load all data in parallel
-      const [userProfile, latest, comparison, entries, measurements, media] = await Promise.all([
-        getUserProfile(user.uid),
-        getLatestWeight(user.uid),
-        getTodayAndYesterdayWeight(user.uid),
-        getWeightEntries(user.uid),
-        getBodyMeasurements(user.uid),
-        getProgressMedia(user.uid),
-      ]);
+      const [userProfile, latest, comparison, entries, measurements, media, pinned] =
+        await Promise.all([
+          getUserProfile(user.uid),
+          getLatestWeight(user.uid),
+          getTodayAndYesterdayWeight(user.uid),
+          getWeightEntries(user.uid),
+          getBodyMeasurements(user.uid),
+          getProgressMedia(user.uid),
+          getPinnedDocuments(user.uid),
+        ]);
 
       setProfile(userProfile);
       setLatestWeight(latest);
@@ -121,6 +139,7 @@ export default function HomePage() {
       setTotalEntries(entries.length);
       setTotalMeasurements(measurements.length);
       setTotalMedia(media.length);
+      setPinnedDocuments(pinned);
 
       if (comparison.today && comparison.yesterday) {
         setWeightComparison(
@@ -157,6 +176,42 @@ export default function HomePage() {
 
   const handleExportSummary = () => {
     exportSummaryReport(profile, weightEntries, bodyMeasurements);
+  };
+
+  const getDocumentIcon = (doc: Document) => {
+    const mimeType = doc.mimeType;
+    if (mimeType === 'application/pdf') {
+      return <PictureAsPdfIcon sx={{ fontSize: 40, color: 'error.main' }} />;
+    }
+    if (mimeType.includes('word') || mimeType === 'application/msword') {
+      return <ArticleIcon sx={{ fontSize: 40, color: 'primary.main' }} />;
+    }
+    if (mimeType.startsWith('image/')) {
+      return <ImageIcon sx={{ fontSize: 40, color: 'success.main' }} />;
+    }
+    return <DescriptionIcon sx={{ fontSize: 40, color: 'text.secondary' }} />;
+  };
+
+  const getDocumentTypeIcon = (type: DocumentType) => {
+    switch (type) {
+      case 'training_plan':
+        return <FitnessCenterOutlinedIcon fontSize="small" color="primary" />;
+      case 'diet_plan':
+        return <RestaurantIcon fontSize="small" color="success" />;
+      case 'custom':
+        return <DescriptionIcon fontSize="small" color="action" />;
+    }
+  };
+
+  const getDocumentTypeLabel = (type: DocumentType) => {
+    switch (type) {
+      case 'training_plan':
+        return 'Training Plan';
+      case 'diet_plan':
+        return 'Diet Plan';
+      case 'custom':
+        return 'Custom';
+    }
   };
 
   if (loading) {
@@ -376,6 +431,98 @@ export default function HomePage() {
                 </Button>
               </Stack>
             </Box>
+
+            {/* Pinned Documents Section */}
+            {pinnedDocuments.length > 0 && (
+              <Box sx={{ mb: 4 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                  <PushPinIcon color="primary" />
+                  <Typography variant="h5">Pinned Documents</Typography>
+                </Box>
+                <Stack
+                  direction={{ xs: 'column', sm: 'row' }}
+                  spacing={2}
+                  sx={{ flexWrap: 'wrap' }}
+                >
+                  {pinnedDocuments.map((doc) => (
+                    <Box
+                      key={doc.id}
+                      sx={{ flex: { xs: '1 1 100%', sm: '1 1 45%', md: '1 1 30%' } }}
+                    >
+                      <Card
+                        sx={{
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          '&:hover': {
+                            boxShadow: 4,
+                            transform: 'translateY(-2px)',
+                          },
+                        }}
+                        onClick={() => window.open(doc.fileUrl, '_blank')}
+                      >
+                        <CardContent>
+                          <Box sx={{ display: 'flex', gap: 2, alignItems: 'flex-start' }}>
+                            <Box sx={{ flexShrink: 0 }}>{getDocumentIcon(doc)}</Box>
+                            <Box sx={{ flex: 1, minWidth: 0 }}>
+                              <Typography
+                                variant="subtitle1"
+                                fontWeight="bold"
+                                noWrap
+                                title={doc.name}
+                              >
+                                {doc.name}
+                              </Typography>
+                              <Box
+                                sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mt: 0.5 }}
+                              >
+                                {getDocumentTypeIcon(doc.type)}
+                                <Typography variant="body2" color="text.secondary">
+                                  {getDocumentTypeLabel(doc.type)}
+                                </Typography>
+                              </Box>
+                              {doc.notes && (
+                                <Typography
+                                  variant="caption"
+                                  color="text.secondary"
+                                  sx={{
+                                    display: 'block',
+                                    mt: 0.5,
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap',
+                                  }}
+                                  title={doc.notes}
+                                >
+                                  {doc.notes}
+                                </Typography>
+                              )}
+                            </Box>
+                            <IconButton
+                              size="small"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                window.open(doc.fileUrl, '_blank');
+                              }}
+                              title="Open document"
+                            >
+                              <OpenInNewIcon fontSize="small" />
+                            </IconButton>
+                          </Box>
+                        </CardContent>
+                      </Card>
+                    </Box>
+                  ))}
+                </Stack>
+                <Button
+                  variant="text"
+                  size="small"
+                  onClick={() => router.push('/media')}
+                  sx={{ mt: 1 }}
+                >
+                  View all files
+                </Button>
+              </Box>
+            )}
 
             {/* Goal Progress */}
             {latestWeight && profile?.goalWeight && (

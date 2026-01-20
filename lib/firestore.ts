@@ -22,6 +22,8 @@ import {
   ProgressMedia,
   CalendarSettings,
   DEFAULT_CALENDAR_SETTINGS,
+  Document,
+  DocumentType,
 } from '@/types';
 
 // ==================== User Profile Operations ====================
@@ -465,6 +467,156 @@ export const clearCalendarData = async (uid: string): Promise<void> => {
     });
   } catch (error) {
     console.error('Error clearing calendar data:', error);
+    throw error;
+  }
+};
+
+// ==================== Documents Operations ====================
+
+/**
+ * Get all documents for a user
+ */
+export const getDocuments = async (
+  uid: string,
+  type?: DocumentType,
+  limitCount: number = 100
+): Promise<Document[]> => {
+  try {
+    let q;
+    if (type) {
+      q = query(
+        collection(db, `users/${uid}/documents`),
+        where('type', '==', type),
+        orderBy('date', 'desc'),
+        limit(limitCount)
+      );
+    } else {
+      q = query(
+        collection(db, `users/${uid}/documents`),
+        orderBy('date', 'desc'),
+        limit(limitCount)
+      );
+    }
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as Document);
+  } catch (error) {
+    console.error('Error getting documents:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get pinned documents for home page
+ */
+export const getPinnedDocuments = async (uid: string): Promise<Document[]> => {
+  try {
+    const q = query(
+      collection(db, `users/${uid}/documents`),
+      where('pinToHome', '==', true),
+      orderBy('date', 'desc')
+    );
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }) as Document);
+  } catch (error) {
+    console.error('Error getting pinned documents:', error);
+    throw error;
+  }
+};
+
+/**
+ * Add new document
+ */
+export const addDocument = async (
+  uid: string,
+  data: {
+    name: string;
+    type: DocumentType;
+    fileUrl: string;
+    storagePath: string;
+    fileSize: number;
+    mimeType: string;
+    date: Date;
+    notes?: string;
+    pinToHome?: boolean;
+  }
+): Promise<string> => {
+  try {
+    const docRef = await addDoc(collection(db, `users/${uid}/documents`), {
+      name: data.name,
+      type: data.type,
+      fileUrl: data.fileUrl,
+      storagePath: data.storagePath,
+      fileSize: data.fileSize,
+      mimeType: data.mimeType,
+      date: Timestamp.fromDate(data.date),
+      notes: data.notes || null,
+      pinToHome: data.pinToHome || false,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    });
+    return docRef.id;
+  } catch (error) {
+    console.error('Error adding document:', error);
+    throw error;
+  }
+};
+
+/**
+ * Update document
+ */
+export const updateDocument = async (
+  uid: string,
+  documentId: string,
+  data: {
+    name?: string;
+    type?: DocumentType;
+    notes?: string;
+    pinToHome?: boolean;
+  }
+): Promise<void> => {
+  try {
+    const updateData: Record<string, unknown> = {
+      updatedAt: serverTimestamp(),
+    };
+    if (data.name !== undefined) updateData.name = data.name;
+    if (data.type !== undefined) updateData.type = data.type;
+    if (data.notes !== undefined) updateData.notes = data.notes;
+    if (data.pinToHome !== undefined) updateData.pinToHome = data.pinToHome;
+
+    await updateDoc(doc(db, `users/${uid}/documents`, documentId), updateData);
+  } catch (error) {
+    console.error('Error updating document:', error);
+    throw error;
+  }
+};
+
+/**
+ * Toggle document pin status
+ */
+export const toggleDocumentPin = async (
+  uid: string,
+  documentId: string,
+  pinToHome: boolean
+): Promise<void> => {
+  try {
+    await updateDoc(doc(db, `users/${uid}/documents`, documentId), {
+      pinToHome,
+      updatedAt: serverTimestamp(),
+    });
+  } catch (error) {
+    console.error('Error toggling document pin:', error);
+    throw error;
+  }
+};
+
+/**
+ * Delete document
+ */
+export const deleteDocument = async (uid: string, documentId: string): Promise<void> => {
+  try {
+    await deleteDoc(doc(db, `users/${uid}/documents`, documentId));
+  } catch (error) {
+    console.error('Error deleting document:', error);
     throw error;
   }
 };
