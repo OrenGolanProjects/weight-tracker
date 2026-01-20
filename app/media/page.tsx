@@ -148,6 +148,7 @@ export default function MediaGalleryPage() {
     doc: null,
   });
   const [deleting, setDeleting] = useState(false);
+  const [pinningDocId, setPinningDocId] = useState<string | null>(null);
   const hasInitialized = useRef(false);
 
   // Group media by month
@@ -332,9 +333,10 @@ export default function MediaGalleryPage() {
   };
 
   const handleTogglePin = async (doc: Document) => {
-    if (!user) return;
+    if (!user || pinningDocId) return;
 
     try {
+      setPinningDocId(doc.id);
       await toggleDocumentPin(user.uid, doc.id, !doc.pinToHome);
       setAllDocuments((prev) =>
         prev.map((d) => (d.id === doc.id ? { ...d, pinToHome: !d.pinToHome } : d))
@@ -342,6 +344,8 @@ export default function MediaGalleryPage() {
     } catch (err) {
       console.error('Error toggling pin:', err);
       setError('Failed to update pin status.');
+    } finally {
+      setPinningDocId(null);
     }
   };
 
@@ -884,8 +888,11 @@ export default function MediaGalleryPage() {
                                   e.stopPropagation();
                                   handleTogglePin(doc);
                                 }}
+                                disabled={pinningDocId === doc.id}
                               >
-                                {doc.pinToHome ? (
+                                {pinningDocId === doc.id ? (
+                                  <CircularProgress size={18} />
+                                ) : doc.pinToHome ? (
                                   <PushPinIcon fontSize="small" />
                                 ) : (
                                   <PushPinOutlinedIcon fontSize="small" />
@@ -1050,11 +1057,20 @@ export default function MediaGalleryPage() {
             </DialogContent>
             <DialogActions>
               <Button
-                startIcon={viewDocDialog.doc.pinToHome ? <PushPinIcon /> : <PushPinOutlinedIcon />}
+                startIcon={
+                  pinningDocId === viewDocDialog.doc.id ? (
+                    <CircularProgress size={18} />
+                  ) : viewDocDialog.doc.pinToHome ? (
+                    <PushPinIcon />
+                  ) : (
+                    <PushPinOutlinedIcon />
+                  )
+                }
                 onClick={() => {
                   handleTogglePin(viewDocDialog.doc!);
                 }}
                 color={viewDocDialog.doc.pinToHome ? 'warning' : 'inherit'}
+                disabled={pinningDocId === viewDocDialog.doc.id}
               >
                 {viewDocDialog.doc.pinToHome ? 'Unpin' : 'Pin to Home'}
               </Button>
