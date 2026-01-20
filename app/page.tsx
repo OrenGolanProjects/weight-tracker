@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Box,
@@ -16,13 +16,19 @@ import {
   Button,
   Stack,
   Chip,
+  Fab,
+  Zoom,
+  useScrollTrigger,
 } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
+import SettingsIcon from '@mui/icons-material/Settings';
 import AddIcon from '@mui/icons-material/Add';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import DownloadIcon from '@mui/icons-material/Download';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useAuth } from '@/contexts/AuthContext';
 import {
   getUserProfile,
@@ -60,6 +66,24 @@ export default function HomePage() {
   const [totalMeasurements, setTotalMeasurements] = useState(0);
   const [totalMedia, setTotalMedia] = useState(0);
 
+  // Refs for scroll navigation
+  const historyRef = useRef<HTMLDivElement>(null);
+  const topRef = useRef<HTMLDivElement>(null);
+
+  // Scroll trigger for showing/hiding FABs
+  const trigger = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 100,
+  });
+
+  const scrollToHistory = () => {
+    historyRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   useEffect(() => {
     // Redirect to login if not authenticated
     if (!user && !loading) {
@@ -71,6 +95,7 @@ export default function HomePage() {
     if (user) {
       loadDashboardData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const loadDashboardData = async () => {
@@ -156,7 +181,7 @@ export default function HomePage() {
   const bmi = getBMI();
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 1 }} ref={topRef}>
       {/* Navigation Bar */}
       <AppBar position="static">
         <Toolbar>
@@ -176,6 +201,9 @@ export default function HomePage() {
                 alt={user.displayName || 'User'}
                 sx={{ width: 32, height: 32 }}
               />
+            </IconButton>
+            <IconButton color="inherit" onClick={() => router.push('/settings')} title="Settings">
+              <SettingsIcon />
             </IconButton>
             <IconButton color="inherit" onClick={handleLogout} title="Logout">
               <LogoutIcon />
@@ -310,6 +338,45 @@ export default function HomePage() {
               </Box>
             </Stack>
 
+            {/* Quick Actions */}
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="h5" gutterBottom>
+                Quick Actions
+              </Typography>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  startIcon={<AddIcon />}
+                  size="large"
+                  sx={{ py: 2 }}
+                  onClick={() => router.push('/weight/add')}
+                >
+                  Add Weight
+                </Button>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  startIcon={<AddIcon />}
+                  size="large"
+                  sx={{ py: 2 }}
+                  onClick={() => router.push('/measurements/add')}
+                >
+                  Add Measurements
+                </Button>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  startIcon={<AddIcon />}
+                  size="large"
+                  sx={{ py: 2 }}
+                  onClick={() => router.push('/media/add')}
+                >
+                  Add Photo/Video
+                </Button>
+              </Stack>
+            </Box>
+
             {/* Goal Progress */}
             {latestWeight && profile?.goalWeight && (
               <Box sx={{ mb: 4 }}>
@@ -395,45 +462,6 @@ export default function HomePage() {
               </Box>
             )}
 
-            {/* Quick Actions */}
-            <Box sx={{ mb: 4 }}>
-              <Typography variant="h5" gutterBottom>
-                Quick Actions
-              </Typography>
-              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-                <Button
-                  variant="contained"
-                  fullWidth
-                  startIcon={<AddIcon />}
-                  size="large"
-                  sx={{ py: 2 }}
-                  onClick={() => router.push('/weight/add')}
-                >
-                  Add Weight
-                </Button>
-                <Button
-                  variant="contained"
-                  fullWidth
-                  startIcon={<AddIcon />}
-                  size="large"
-                  sx={{ py: 2 }}
-                  onClick={() => router.push('/measurements/add')}
-                >
-                  Add Measurements
-                </Button>
-                <Button
-                  variant="contained"
-                  fullWidth
-                  startIcon={<AddIcon />}
-                  size="large"
-                  sx={{ py: 2 }}
-                  onClick={() => router.push('/media/add')}
-                >
-                  Add Photo/Video
-                </Button>
-              </Stack>
-            </Box>
-
             {/* Export & Reports */}
             {(weightEntries.length > 0 || bodyMeasurements.length > 0) && (
               <Box sx={{ mb: 4 }}>
@@ -455,7 +483,7 @@ export default function HomePage() {
 
             {/* View History Buttons */}
             {(totalEntries > 0 || totalMeasurements > 0 || totalMedia > 0) && (
-              <Box sx={{ mb: 4, textAlign: 'center' }}>
+              <Box sx={{ mb: 4, textAlign: 'center' }} ref={historyRef}>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} justifyContent="center">
                   {totalEntries > 0 && (
                     <Button variant="outlined" onClick={() => router.push('/weight/history')}>
@@ -518,6 +546,50 @@ export default function HomePage() {
           </>
         )}
       </Container>
+
+      {/* Floating Navigation Buttons */}
+      <Box
+        sx={{
+          position: 'fixed',
+          bottom: 24,
+          right: 24,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 1,
+        }}
+      >
+        {/* Scroll to Top Button - shows when scrolled down */}
+        <Zoom in={trigger}>
+          <Fab
+            color="primary"
+            size="medium"
+            onClick={scrollToTop}
+            aria-label="scroll to top"
+            sx={{
+              boxShadow: 3,
+              '&:hover': { boxShadow: 6 },
+            }}
+          >
+            <KeyboardArrowUpIcon />
+          </Fab>
+        </Zoom>
+
+        {/* Scroll to History Button - shows when at top and there's content */}
+        <Zoom in={!trigger && (totalEntries > 0 || totalMeasurements > 0 || totalMedia > 0)}>
+          <Fab
+            color="secondary"
+            size="medium"
+            onClick={scrollToHistory}
+            aria-label="scroll to history"
+            sx={{
+              boxShadow: 3,
+              '&:hover': { boxShadow: 6 },
+            }}
+          >
+            <KeyboardArrowDownIcon />
+          </Fab>
+        </Zoom>
+      </Box>
     </Box>
   );
 }

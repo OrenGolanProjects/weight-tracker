@@ -58,6 +58,7 @@ export default function MeasurementsHistoryPage() {
     if (user) {
       loadMeasurements();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, authLoading, router]);
 
   const loadMeasurements = async () => {

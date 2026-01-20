@@ -51,6 +51,7 @@ function EditMeasurementsContent() {
     if (user && measurementId) {
       loadMeasurement();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, authLoading, measurementId, router]);
 
   const loadMeasurement = async () => {

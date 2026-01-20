@@ -15,7 +15,6 @@ import {
 } from '@mui/material';
 import { useAuth } from '@/contexts/AuthContext';
 import { getUserProfile, updateUserProfile, createUserProfile } from '@/lib/firestore';
-import type { User } from '@/types';
 
 export default function ProfilePage() {
   const { user, loading: authLoading } = useAuth();
@@ -42,6 +41,7 @@ export default function ProfilePage() {
     if (user) {
       loadUserProfile();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, authLoading, router]);
 
   const loadUserProfile = async () => {

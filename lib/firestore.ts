@@ -15,7 +15,14 @@ import {
   serverTimestamp,
 } from 'firebase/firestore';
 import { db } from './firebase';
-import { User, WeightEntry, BodyMeasurement, ProgressMedia } from '@/types';
+import {
+  User,
+  WeightEntry,
+  BodyMeasurement,
+  ProgressMedia,
+  CalendarSettings,
+  DEFAULT_CALENDAR_SETTINGS,
+} from '@/types';
 
 // ==================== User Profile Operations ====================
 
@@ -371,6 +378,93 @@ export const deleteProgressMedia = async (uid: string, mediaId: string): Promise
     await deleteDoc(doc(db, `users/${uid}/progressMedia`, mediaId));
   } catch (error) {
     console.error('Error deleting progress media:', error);
+    throw error;
+  }
+};
+
+// ==================== Calendar Settings Operations ====================
+
+/**
+ * Get user calendar settings
+ */
+export const getCalendarSettings = async (uid: string): Promise<CalendarSettings | null> => {
+  try {
+    const profile = await getUserProfile(uid);
+    return profile?.calendarSettings || null;
+  } catch (error) {
+    console.error('Error getting calendar settings:', error);
+    throw error;
+  }
+};
+
+/**
+ * Update calendar settings (partial update with merge)
+ */
+export const updateCalendarSettings = async (
+  uid: string,
+  settings: Partial<CalendarSettings>
+): Promise<void> => {
+  try {
+    const userRef = doc(db, 'users', uid);
+
+    // Get existing calendar settings
+    const userDoc = await getDoc(userRef);
+    const existingSettings = userDoc.data()?.calendarSettings || {};
+
+    // Merge with new settings
+    const mergedSettings = {
+      ...existingSettings,
+      ...settings,
+    };
+
+    await updateDoc(userRef, {
+      calendarSettings: mergedSettings,
+      updatedAt: serverTimestamp(),
+    });
+  } catch (error) {
+    console.error('Error updating calendar settings:', error);
+    throw error;
+  }
+};
+
+/**
+ * Save calendar OAuth tokens
+ */
+export const saveCalendarTokens = async (
+  uid: string,
+  accessToken: string,
+  refreshToken: string,
+  expiresIn: number
+): Promise<void> => {
+  try {
+    const expiryDate = new Date();
+    expiryDate.setSeconds(expiryDate.getSeconds() + expiresIn);
+
+    await updateDoc(doc(db, 'users', uid), {
+      'calendarSettings.accessToken': accessToken,
+      'calendarSettings.refreshToken': refreshToken,
+      'calendarSettings.tokenExpiry': Timestamp.fromDate(expiryDate),
+      'calendarSettings.lastSyncedAt': serverTimestamp(),
+      'calendarSettings.enabled': true,
+      updatedAt: serverTimestamp(),
+    });
+  } catch (error) {
+    console.error('Error saving calendar tokens:', error);
+    throw error;
+  }
+};
+
+/**
+ * Clear all calendar data (disconnect)
+ */
+export const clearCalendarData = async (uid: string): Promise<void> => {
+  try {
+    await updateDoc(doc(db, 'users', uid), {
+      calendarSettings: DEFAULT_CALENDAR_SETTINGS,
+      updatedAt: serverTimestamp(),
+    });
+  } catch (error) {
+    console.error('Error clearing calendar data:', error);
     throw error;
   }
 };

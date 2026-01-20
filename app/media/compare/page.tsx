@@ -49,6 +49,7 @@ export default function PhotoComparePage() {
     if (user) {
       loadPhotos();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, authLoading, router]);
 
   const loadPhotos = async () => {
@@ -328,6 +329,7 @@ export default function PhotoComparePage() {
                       position: 'relative',
                     }}
                   >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={photo.mediaUrl}
                       alt={`Photo ${photo.id}`}
@@ -373,6 +375,7 @@ export default function PhotoComparePage() {
                       position: 'relative',
                     }}
                   >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={photo.mediaUrl}
                       alt={`Photo ${photo.id}`}

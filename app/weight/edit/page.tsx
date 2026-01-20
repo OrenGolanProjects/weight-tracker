@@ -47,6 +47,7 @@ function EditWeightContent() {
     if (user && entryId) {
       loadEntry();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, authLoading, entryId, router]);
 
   const loadEntry = async () => {

@@ -1,5 +1,63 @@
 import { Timestamp } from 'firebase/firestore';
 
+// Calendar Settings
+export interface CalendarSettings {
+  enabled: boolean;
+  accessToken: string | null;
+  refreshToken: string | null;
+  tokenExpiry: Timestamp | null;
+
+  dailyWeightReminder: {
+    enabled: boolean;
+    time: string; // Format: "HH:mm" (e.g., "09:00")
+    eventId: string | null;
+  };
+
+  monthlyMeasurementReminder: {
+    enabled: boolean;
+    dayOfMonth: number; // 1-31
+    time: string; // Format: "HH:mm"
+    eventId: string | null;
+  };
+
+  weeklyProgressReview: {
+    enabled: boolean;
+    dayOfWeek: number; // 0 (Sunday) - 6 (Saturday)
+    time: string; // Format: "HH:mm"
+    eventId: string | null;
+  };
+
+  calendarId: string; // Usually "primary"
+  lastSyncedAt: Timestamp | null;
+}
+
+// Default Calendar Settings
+export const DEFAULT_CALENDAR_SETTINGS: CalendarSettings = {
+  enabled: false,
+  accessToken: null,
+  refreshToken: null,
+  tokenExpiry: null,
+  dailyWeightReminder: {
+    enabled: false,
+    time: '09:00',
+    eventId: null,
+  },
+  monthlyMeasurementReminder: {
+    enabled: false,
+    dayOfMonth: 1,
+    time: '10:00',
+    eventId: null,
+  },
+  weeklyProgressReview: {
+    enabled: false,
+    dayOfWeek: 0, // Sunday
+    time: '18:00',
+    eventId: null,
+  },
+  calendarId: 'primary',
+  lastSyncedAt: null,
+};
+
 // User Profile
 export interface User {
   uid: string;
@@ -9,6 +67,7 @@ export interface User {
   height: number | null; // in cm
   goalWeight: number | null; // in kg
   photoURL: string | null;
+  calendarSettings?: CalendarSettings; // Optional calendar integration
   createdAt: Timestamp;
   updatedAt: Timestamp;
 }
