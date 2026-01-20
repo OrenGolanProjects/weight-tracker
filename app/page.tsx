@@ -575,20 +575,22 @@ export default function HomePage() {
         </Zoom>
 
         {/* Scroll to History Button - shows when at top and there's content */}
-        <Zoom in={!trigger && (totalEntries > 0 || totalMeasurements > 0 || totalMedia > 0)}>
-          <Fab
-            color="secondary"
-            size="medium"
-            onClick={scrollToHistory}
-            aria-label="scroll to history"
-            sx={{
-              boxShadow: 3,
-              '&:hover': { boxShadow: 6 },
-            }}
-          >
-            <KeyboardArrowDownIcon />
-          </Fab>
-        </Zoom>
+        {!dataLoading && (totalEntries > 0 || totalMeasurements > 0 || totalMedia > 0) && (
+          <Zoom in={!trigger}>
+            <Fab
+              color="secondary"
+              size="medium"
+              onClick={scrollToHistory}
+              aria-label="scroll to history"
+              sx={{
+                boxShadow: 3,
+                '&:hover': { boxShadow: 6 },
+              }}
+            >
+              <KeyboardArrowDownIcon />
+            </Fab>
+          </Zoom>
+        )}
       </Box>
     </Box>
   );
