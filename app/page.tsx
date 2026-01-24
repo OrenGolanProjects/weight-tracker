@@ -66,6 +66,7 @@ export default function HomePage() {
   const { user, loading, logout } = useAuth();
   const router = useRouter();
 
+  const [mounted, setMounted] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [latestWeight, setLatestWeight] = useState<WeightEntry | null>(null);
@@ -82,15 +83,26 @@ export default function HomePage() {
   const [totalMedia, setTotalMedia] = useState(0);
   const [pinnedDocuments, setPinnedDocuments] = useState<Document[]>([]);
 
+  // Ensure component is mounted on client before rendering dynamic content
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // Refs for scroll navigation
   const historyRef = useRef<HTMLDivElement>(null);
   const topRef = useRef<HTMLDivElement>(null);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   // Scroll trigger for showing/hiding FABs
   const trigger = useScrollTrigger({
     disableHysteresis: true,
     threshold: 100,
   });
+
+  // Update scroll state when trigger changes
+  useEffect(() => {
+    setIsScrolled(trigger);
+  }, [trigger]);
 
   const scrollToHistory = () => {
     historyRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -110,12 +122,18 @@ export default function HomePage() {
   useEffect(() => {
     if (user) {
       loadDashboardData();
+    } else if (!loading) {
+      // If auth is done loading and there's no user, stop showing data loading spinner
+      setDataLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user, loading]);
 
   const loadDashboardData = async () => {
-    if (!user) return;
+    if (!user) {
+      setDataLoading(false);
+      return;
+    }
 
     try {
       setDataLoading(true);
@@ -214,7 +232,8 @@ export default function HomePage() {
     }
   };
 
-  if (loading) {
+  // Show loading during SSR, auth check, or initial mount
+  if (!mounted || loading) {
     return (
       <Box
         sx={{
@@ -236,7 +255,7 @@ export default function HomePage() {
   const bmi = getBMI();
 
   return (
-    <Box sx={{ flexGrow: 1 }} ref={topRef}>
+    <Box sx={{ flexGrow: 1 }} ref={topRef} key={`home-${user.uid}-${dataLoading}`}>
       {/* Navigation Bar */}
       <AppBar position="static">
         <Toolbar>
@@ -706,7 +725,7 @@ export default function HomePage() {
         }}
       >
         {/* Scroll to Top Button - shows when scrolled down */}
-        <Zoom in={trigger}>
+        <Zoom in={isScrolled}>
           <Fab
             color="primary"
             size="medium"
@@ -723,7 +742,7 @@ export default function HomePage() {
 
         {/* Scroll to History Button - shows when at top and there's content */}
         {!dataLoading && (totalEntries > 0 || totalMeasurements > 0 || totalMedia > 0) && (
-          <Zoom in={!trigger}>
+          <Zoom in={!isScrolled}>
             <Fab
               color="secondary"
               size="medium"

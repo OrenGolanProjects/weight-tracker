@@ -219,7 +219,7 @@ export default function MediaGalleryPage() {
     return Object.values(grouped).sort((a, b) => b.key.localeCompare(a.key));
   }, [allDocuments, mediaFilter]);
 
-  // Auto-expand all months on initial load only
+  // Auto-expand all months when data loads
   useEffect(() => {
     const allKeys = [...mediaByMonth.map((m) => m.key), ...documentsByMonth.map((d) => d.key)];
     if (allKeys.length > 0 && !hasInitialized.current) {
@@ -227,6 +227,16 @@ export default function MediaGalleryPage() {
       setExpandedMonths(new Set(allKeys));
     }
   }, [mediaByMonth, documentsByMonth]);
+
+  // Re-expand months when filter changes and there's new content
+  useEffect(() => {
+    if (hasInitialized.current) {
+      const allKeys = [...mediaByMonth.map((m) => m.key), ...documentsByMonth.map((d) => d.key)];
+      if (allKeys.length > 0) {
+        setExpandedMonths(new Set(allKeys));
+      }
+    }
+  }, [mediaFilter, mediaByMonth, documentsByMonth]);
 
   useEffect(() => {
     if (!authLoading && !user) {

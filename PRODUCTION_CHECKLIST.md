@@ -14,16 +14,16 @@ Click on your OAuth 2.0 Client ID, then add:
 
 ```
 http://localhost:3000
-https://your-production-domain.com
-https://www.your-production-domain.com
+https://weight-tracker-7e67f.web.app
+https://weight-tracker-7e67f.firebaseapp.com
 ```
 
 **Authorized redirect URIs:**
 
 ```
 http://localhost:3000/settings
-https://your-production-domain.com/settings
-https://www.your-production-domain.com/settings
+https://weight-tracker-7e67f.web.app/settings
+https://weight-tracker-7e67f.firebaseapp.com/settings
 ```
 
 **Note**: Replace `your-production-domain.com` with your actual domain (e.g., Vercel URL like `weight-tracker.vercel.app`)
@@ -38,7 +38,11 @@ https://www.your-production-domain.com/settings
 
 #### Production
 
-You need to set these environment variables in your hosting platform (Vercel/Netlify/etc.):
+Environment variables are configured in `.env.production.local` for Firebase Hosting:
+
+**Current Firebase Hosting URLs:**
+- Primary: https://weight-tracker-7e67f.web.app
+- Alternative: https://weight-tracker-7e67f.firebaseapp.com
 
 ```bash
 # Firebase Configuration
@@ -54,11 +58,10 @@ NEXT_PUBLIC_GOOGLE_API_KEY=YOUR_GOOGLE_API_KEY
 NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_ID=315839479476-6qmlcgf5tjtoabjqmk1n7okhfro9ouqo.apps.googleusercontent.com
 ```
 
-**Where to add these:**
+**For Firebase Hosting:**
 
-- **Vercel**: Project Settings → Environment Variables
-- **Netlify**: Site Settings → Build & Deploy → Environment → Environment Variables
-- **Other platforms**: Check their documentation for environment variables
+Environment variables are stored in `.env.production.local` and bundled during build.
+No separate hosting platform configuration needed.
 
 ---
 
@@ -105,26 +108,26 @@ NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_ID=315839479476-6qmlcgf5tjtoabjqmk1n7okhfro9ouqo
 Add your production domain to Firebase authorized domains:
 
 1. Go to: https://console.firebase.google.com/project/weight-tracker-7e67f/authentication/settings
-2. Under "Authorized domains", click "Add domain"
-3. Add your production domain (e.g., `weight-tracker.vercel.app`)
+2. Under "Authorized domains", verify these domains are added:
+   - `weight-tracker-7e67f.web.app` ✅
+   - `weight-tracker-7e67f.firebaseapp.com` ✅
+3. Add custom domain if needed
 
 #### Storage CORS Configuration (for media uploads)
 
-If using Firebase Storage for photos/videos, configure CORS:
-
-Create `cors.json`:
+✅ Already configured in `cors.json`:
 
 ```json
 [
   {
-    "origin": ["https://your-production-domain.com"],
+    "origin": ["*"],
     "method": ["GET", "POST", "PUT", "DELETE"],
     "maxAgeSeconds": 3600
   }
 ]
 ```
 
-Apply CORS:
+To update CORS if needed:
 
 ```bash
 gsutil cors set cors.json gs://weight-tracker-7e67f.firebasestorage.app
@@ -203,47 +206,34 @@ Test all features:
 
 ---
 
-### 7. Deployment Platforms
+### 7. Deployment Platform: Firebase Hosting
 
-#### Option A: Vercel (Recommended for Next.js)
+**Current Setup:** ✅ Already configured and deployed
 
-**Steps:**
+**Deployment Commands:**
 
-1. Push code to GitHub
-2. Go to https://vercel.com
-3. Click "New Project"
-4. Import your GitHub repository
-5. Add environment variables (see section 2)
-6. Deploy
+```bash
+# Build and deploy
+npm run build
+firebase deploy --only hosting
 
-**Vercel will automatically:**
+# Or use the shortcut
+npm run deploy
+```
 
-- Detect Next.js configuration
-- Set up SSL certificate (HTTPS)
-- Provide a production URL
+**Firebase Hosting Features:**
 
-#### Option B: Netlify
+- ✅ Automatic HTTPS/SSL
+- ✅ Global CDN
+- ✅ Custom domain support
+- ✅ Automatic builds via `.next` output
+- ✅ Version rollback support
 
-**Steps:**
+**Production URLs:**
+- Primary: https://weight-tracker-7e67f.web.app
+- Alternative: https://weight-tracker-7e67f.firebaseapp.com
 
-1. Push code to GitHub
-2. Go to https://netlify.com
-3. Click "Add new site"
-4. Connect to GitHub repository
-5. Build settings:
-   - Build command: `npm run build`
-   - Publish directory: `.next`
-6. Add environment variables
-7. Deploy
-
-#### Option C: Self-Hosted (VPS/Cloud Server)
-
-Requires:
-
-- Node.js installed
-- PM2 or similar process manager
-- Nginx reverse proxy
-- SSL certificate (Let's Encrypt)
+**Firebase Console:** https://console.firebase.google.com/project/weight-tracker-7e67f/hosting
 
 ---
 
@@ -310,10 +300,10 @@ If something goes wrong:
 **Minimum steps for production:**
 
 1. ✅ Build locally and test: `npm run build && npm start`
-2. ✅ Add production URLs to Google OAuth Client ID
-3. ✅ Add production domain to Firebase authorized domains
-4. ✅ Set environment variables in hosting platform
-5. ✅ Deploy via Vercel/Netlify/other
+2. ✅ Add Firebase Hosting URLs to Google OAuth Client ID
+3. ✅ Verify Firebase authorized domains include hosting URLs
+4. ✅ Ensure `.env.production.local` has all environment variables
+5. ✅ Deploy via Firebase: `npm run deploy`
 6. ✅ Test OAuth flow on production URL
 7. ✅ Add your email as test user (if staying in testing mode)
 8. ✅ Test calendar integration end-to-end
@@ -351,8 +341,8 @@ If something goes wrong:
 
 - **Firebase Console**: https://console.firebase.google.com/project/weight-tracker-7e67f
 - **Google Cloud Console**: https://console.cloud.google.com/?project=weight-tracker-7e67f
-- **Next.js Deployment Docs**: https://nextjs.org/docs/deployment
-- **Vercel Documentation**: https://vercel.com/docs
+- **Next.js Documentation**: https://nextjs.org/docs
+- **Firebase Hosting Docs**: https://firebase.google.com/docs/hosting
 - **Firebase Documentation**: https://firebase.google.com/docs
 
 ---
@@ -361,16 +351,16 @@ If something goes wrong:
 
 Before going live, confirm:
 
-- [ ] Google OAuth URLs updated with production domain
-- [ ] Environment variables configured in hosting platform
-- [ ] Firebase authorized domains include production domain
-- [ ] Production build works locally
+- [x] Google OAuth URLs updated with Firebase Hosting URLs
+- [x] Environment variables in `.env.production.local`
+- [x] Firebase authorized domains include hosting URLs
+- [x] Production build works locally
 - [ ] All features tested in production
 - [ ] OAuth flow works in production
 - [ ] Calendar integration works in production
 - [ ] Mobile/PWA tested
-- [ ] Firestore security rules reviewed
-- [ ] Storage security rules reviewed (if using storage)
+- [x] Firestore security rules reviewed and deployed
+- [x] Storage security rules reviewed and deployed
 - [ ] Monitoring set up
 - [ ] Test users added (if in testing mode)
 
