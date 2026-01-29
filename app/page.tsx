@@ -31,6 +31,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import FitnessCenterOutlinedIcon from '@mui/icons-material/FitnessCenterOutlined';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
+import CasinoIcon from '@mui/icons-material/Casino';
 import DescriptionIcon from '@mui/icons-material/Description';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import ArticleIcon from '@mui/icons-material/Article';
@@ -447,6 +448,17 @@ export default function HomePage() {
                   onClick={() => router.push('/media/add')}
                 >
                   Add Photo/Video
+                </Button>
+                <Button
+                  variant="contained"
+                  fullWidth
+                  startIcon={<CasinoIcon />}
+                  size="large"
+                  color="secondary"
+                  sx={{ py: 2 }}
+                  onClick={() => router.push('/meals')}
+                >
+                  Generate Meal
                 </Button>
               </Stack>
             </Box>
