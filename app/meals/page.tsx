@@ -460,6 +460,7 @@ export default function MealsPage() {
               onChange={handleOptionChange}
               aria-label="meal option"
               disabled={generatedMeal?.isLoading}
+              sx={{ flexWrap: 'wrap', justifyContent: 'center' }}
             >
               <ToggleButton value={0} sx={{ px: 3 }}>
                 <Box sx={{ textAlign: 'center' }}>

@@ -161,7 +161,7 @@ export default function ProfilePage() {
 
   return (
     <Container maxWidth="sm" sx={{ mt: 8, mb: 4 }}>
-      <Paper elevation={3} sx={{ p: 4 }}>
+      <Paper elevation={3} sx={{ p: { xs: 2, sm: 4 } }}>
         <Typography variant="h4" component="h1" gutterBottom align="center">
           Personal Details
         </Typography>

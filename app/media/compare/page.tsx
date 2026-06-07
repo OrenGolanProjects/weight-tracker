@@ -20,6 +20,8 @@ import {
   Chip,
   AppBar,
   Toolbar,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
@@ -33,6 +35,9 @@ import type { Timestamp } from 'firebase/firestore';
 export default function PhotoComparePage() {
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
+  const theme = useTheme();
+  // Fewer columns on phones so thumbnails don't get squashed/distorted.
+  const gridCols = useMediaQuery(theme.breakpoints.down('sm')) ? 2 : 4;
 
   const [loading, setLoading] = useState(true);
   const [photos, setPhotos] = useState<ProgressMedia[]>([]);
@@ -315,7 +320,7 @@ export default function PhotoComparePage() {
               <Typography variant="h6" gutterBottom>
                 Select &ldquo;Before&rdquo; Photo
               </Typography>
-              <ImageList cols={4} gap={16} sx={{ mb: 4 }}>
+              <ImageList cols={gridCols} gap={16} sx={{ mb: 4 }}>
                 {photos.map((photo) => (
                   <ImageListItem
                     key={photo.id}
@@ -361,7 +366,7 @@ export default function PhotoComparePage() {
               <Typography variant="h6" gutterBottom>
                 Select &ldquo;After&rdquo; Photo
               </Typography>
-              <ImageList cols={4} gap={16}>
+              <ImageList cols={gridCols} gap={16}>
                 {photos.map((photo) => (
                   <ImageListItem
                     key={photo.id}

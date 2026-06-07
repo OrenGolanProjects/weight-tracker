@@ -761,7 +761,12 @@ export default function SettingsPage() {
           </Card>
 
           {/* Disconnect Confirmation Dialog */}
-          <Dialog open={disconnectDialogOpen} onClose={() => setDisconnectDialogOpen(false)}>
+          <Dialog
+            open={disconnectDialogOpen}
+            onClose={() => setDisconnectDialogOpen(false)}
+            fullWidth
+            maxWidth="xs"
+          >
             <DialogTitle>Disconnect Google Calendar?</DialogTitle>
             <DialogContent>
               <Typography>
