@@ -35,6 +35,15 @@ const baseOptions: ThemeOptions = {
         root: { padding: 10 },
       },
     },
+    // Comfortable side margins so content isn't edge-to-edge on phones
+    MuiContainer: {
+      styleOverrides: {
+        root: {
+          paddingLeft: 24,
+          paddingRight: 24,
+        },
+      },
+    },
   },
 };
 
