@@ -1,5 +1,5 @@
 // Service Worker for PWA - Network-first strategy for HTML
-const CACHE_NAME = 'weight-tracker-v2';
+const CACHE_NAME = 'weight-tracker-v3';
 const urlsToCache = ['/manifest.json', '/icon-192x192.png', '/icon-512x512.png'];
 
 // Install event - cache static resources and activate immediately
@@ -18,6 +18,14 @@ self.addEventListener('install', (event) => {
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
+
+  // Only ever touch same-origin GET requests. Everything cross-origin
+  // (Firestore/Auth WebChannel, Storage, Cloud Functions, Google APIs) must
+  // go straight to the network — intercepting it breaks Firestore's streaming
+  // connection and forces slow long-poll fallbacks/retries on every data load.
+  if (url.origin !== self.location.origin || request.method !== 'GET') {
+    return; // let the browser handle it natively
+  }
 
   // Network-first strategy for HTML pages
   if (request.headers.get('accept')?.includes('text/html') || url.pathname.endsWith('/')) {
