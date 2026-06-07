@@ -498,7 +498,7 @@ export default function MediaGalleryPage() {
               }
               label="All"
               value="all"
-              iconPosition="start"
+              iconPosition="top"
             />
             <Tab
               icon={
@@ -508,7 +508,7 @@ export default function MediaGalleryPage() {
               }
               label="Photos"
               value="photo"
-              iconPosition="start"
+              iconPosition="top"
             />
             <Tab
               icon={
@@ -518,7 +518,7 @@ export default function MediaGalleryPage() {
               }
               label="Videos"
               value="video"
-              iconPosition="start"
+              iconPosition="top"
             />
             <Tab
               icon={
@@ -528,7 +528,7 @@ export default function MediaGalleryPage() {
               }
               label="Files"
               value="file"
-              iconPosition="start"
+              iconPosition="top"
             />
           </Tabs>
         </Paper>
