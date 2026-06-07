@@ -299,13 +299,24 @@ export default function MediaGalleryPage() {
     try {
       setDeleting(true);
 
-      if (deleteDialog.media.type === 'photo' && deleteDialog.media.thumbnailPath) {
-        await deletePhoto(deleteDialog.media.storagePath, deleteDialog.media.thumbnailPath);
-      } else {
-        await deleteMedia(deleteDialog.media.storagePath);
+      // Delete the Firestore record first (source of truth for the UI), then
+      // clean up storage. If storage cleanup fails we only leave an orphan
+      // file (cleanable) instead of a record pointing at a missing file.
+      await deleteProgressMedia(user.uid, deleteDialog.mediaId);
+
+      try {
+        if (deleteDialog.media.type === 'photo' && deleteDialog.media.thumbnailPath) {
+          await deletePhoto(deleteDialog.media.storagePath, deleteDialog.media.thumbnailPath);
+        } else {
+          await deleteMedia(deleteDialog.media.storagePath);
+        }
+      } catch (storageErr) {
+        console.warn(
+          'Media record deleted; storage cleanup failed (orphan file left):',
+          storageErr
+        );
       }
 
-      await deleteProgressMedia(user.uid, deleteDialog.mediaId);
       setAllMedia((prev) => prev.filter((m) => m.id !== deleteDialog.mediaId));
       setDeleteDialog({ open: false, mediaId: null, media: null });
     } catch (err) {
@@ -322,8 +333,18 @@ export default function MediaGalleryPage() {
     try {
       setDeleting(true);
 
-      await deleteDocumentFile(deleteDocDialog.doc.storagePath);
+      // Firestore record first, then best-effort storage cleanup (see note above).
       await deleteDocument(user.uid, deleteDocDialog.docId);
+
+      try {
+        await deleteDocumentFile(deleteDocDialog.doc.storagePath);
+      } catch (storageErr) {
+        console.warn(
+          'Document record deleted; storage cleanup failed (orphan file left):',
+          storageErr
+        );
+      }
+
       setAllDocuments((prev) => prev.filter((d) => d.id !== deleteDocDialog.docId));
       setDeleteDocDialog({ open: false, docId: null, doc: null });
     } catch (err) {
