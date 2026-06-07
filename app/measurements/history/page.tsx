@@ -140,17 +140,27 @@ export default function MeasurementsHistoryPage() {
 
   return (
     <Container maxWidth="md" sx={{ mt: 8, mb: 4 }}>
-      <Paper elevation={3} sx={{ p: 4 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+      <Paper elevation={3} sx={{ p: { xs: 2, sm: 4 } }}>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            justifyContent: 'space-between',
+            alignItems: { xs: 'stretch', sm: 'center' },
+            gap: 2,
+            mb: 3,
+          }}
+        >
           <Typography variant="h4" component="h1">
             Measurements History
           </Typography>
-          <Stack direction="row" spacing={2}>
+          <Stack direction="row" spacing={2} sx={{ flexShrink: 0 }}>
             <Button
               variant="outlined"
               startIcon={<DownloadIcon />}
               onClick={handleExport}
               disabled={measurements.length === 0}
+              sx={{ flexGrow: { xs: 1, sm: 0 } }}
             >
               Export CSV
             </Button>
@@ -158,6 +168,7 @@ export default function MeasurementsHistoryPage() {
               variant="contained"
               startIcon={<AddIcon />}
               onClick={() => router.push('/measurements/add')}
+              sx={{ flexGrow: { xs: 1, sm: 0 } }}
             >
               Add Entry
             </Button>
