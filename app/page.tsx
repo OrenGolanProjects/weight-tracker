@@ -68,6 +68,7 @@ import GoalProgress from '@/components/GoalProgress';
 import WeightStatistics from '@/components/WeightStatistics';
 import BMITrendChart from '@/components/BMITrendChart';
 import UpdateAppButton from '@/components/UpdateAppButton';
+import ColorModeToggle from '@/components/ColorModeToggle';
 
 export default function HomePage() {
   const { user, loading, logout } = useAuth();
@@ -284,6 +285,7 @@ export default function HomePage() {
                 sx={{ width: 32, height: 32 }}
               />
             </IconButton>
+            <ColorModeToggle />
             <UpdateAppButton />
             <IconButton color="inherit" onClick={() => router.push('/settings')} title="Settings">
               <SettingsIcon />

@@ -1,10 +1,11 @@
 import type { Metadata, Viewport } from 'next';
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter';
-import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import theme from '@/theme/theme';
+import Box from '@mui/material/Box';
+import ColorModeProvider from '@/theme/ColorModeProvider';
+import SnackbarProvider from '@/components/SnackbarProvider';
 import { AuthProvider } from '@/contexts/AuthContext';
 import PWARegister from '@/components/PWARegister';
+import BottomNav from '@/components/BottomNav';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -39,10 +40,15 @@ export default function RootLayout({
       <body suppressHydrationWarning>
         <PWARegister />
         <AppRouterCacheProvider>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <AuthProvider>{children}</AuthProvider>
-          </ThemeProvider>
+          <ColorModeProvider>
+            <SnackbarProvider>
+              <AuthProvider>
+                {/* Bottom padding on mobile so content clears the fixed bottom nav */}
+                <Box sx={{ pb: { xs: 7, md: 0 } }}>{children}</Box>
+                <BottomNav />
+              </AuthProvider>
+            </SnackbarProvider>
+          </ColorModeProvider>
         </AppRouterCacheProvider>
       </body>
     </html>
