@@ -70,6 +70,7 @@ import BMITrendChart from '@/components/BMITrendChart';
 import UpdateAppButton from '@/components/UpdateAppButton';
 import ColorModeToggle from '@/components/ColorModeToggle';
 import QuickAddWeight from '@/components/QuickAddWeight';
+import DashboardSkeleton from '@/components/DashboardSkeleton';
 
 export default function HomePage() {
   const { user, loading, logout } = useAuth();
@@ -241,20 +242,9 @@ export default function HomePage() {
     }
   };
 
-  // Show loading during SSR, auth check, or initial mount
+  // Show a skeleton during SSR, auth check, or initial mount
   if (!mounted || loading) {
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          minHeight: '100vh',
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
+    return <DashboardSkeleton />;
   }
 
   if (!user) {

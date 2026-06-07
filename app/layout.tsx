@@ -6,6 +6,7 @@ import SnackbarProvider from '@/components/SnackbarProvider';
 import { AuthProvider } from '@/contexts/AuthContext';
 import PWARegister from '@/components/PWARegister';
 import BottomNav from '@/components/BottomNav';
+import InstallPrompt from '@/components/InstallPrompt';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -46,6 +47,7 @@ export default function RootLayout({
                 {/* Bottom padding on mobile so content clears the fixed bottom nav */}
                 <Box sx={{ pb: { xs: 7, md: 0 } }}>{children}</Box>
                 <BottomNav />
+                <InstallPrompt />
               </AuthProvider>
             </SnackbarProvider>
           </ColorModeProvider>
