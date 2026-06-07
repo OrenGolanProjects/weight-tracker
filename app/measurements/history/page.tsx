@@ -28,11 +28,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import DownloadIcon from '@mui/icons-material/Download';
+import StraightenIcon from '@mui/icons-material/Straighten';
 import { useAuth } from '@/contexts/AuthContext';
 import { getBodyMeasurements, deleteBodyMeasurement } from '@/lib/firestore';
 import { exportBodyMeasurementsToCSV } from '@/lib/export';
 import type { BodyMeasurement } from '@/types';
 import BodyMeasurementsChart from '@/components/BodyMeasurementsChart';
+import EmptyState from '@/components/EmptyState';
 
 export default function MeasurementsHistoryPage() {
   const { user, loading: authLoading } = useAuth();
@@ -169,21 +171,13 @@ export default function MeasurementsHistoryPage() {
         )}
 
         {measurements.length === 0 ? (
-          <Box sx={{ textAlign: 'center', py: 4 }}>
-            <Typography variant="h6" color="text.secondary" gutterBottom>
-              No measurements yet
-            </Typography>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-              Start tracking your body measurements to monitor your progress
-            </Typography>
-            <Button
-              variant="contained"
-              startIcon={<AddIcon />}
-              onClick={() => router.push('/measurements/add')}
-            >
-              Add First Measurement
-            </Button>
-          </Box>
+          <EmptyState
+            icon={<StraightenIcon />}
+            title="No measurements yet"
+            description="Start tracking your body measurements to monitor your progress"
+            actionLabel="Add first measurement"
+            onAction={() => router.push('/measurements/add')}
+          />
         ) : (
           <>
             {/* Body Measurements Chart */}
