@@ -1,3 +1,4 @@
+/* Kept for app/page.module.css which references these vars */
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -16,13 +17,8 @@ body {
   overflow-x: hidden;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+/* Body colors + font are owned by the MUI theme (CssBaseline) so the in-app
+   dark-mode toggle is respected regardless of the OS color scheme. */
 
 * {
   box-sizing: border-box;
@@ -35,8 +31,8 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+/* Respect the device notch / Dynamic Island in installed (standalone) PWA mode.
+   In a normal browser these insets resolve to 0, so this is a no-op there. */
+.MuiAppBar-root {
+  padding-top: env(safe-area-inset-top);
 }

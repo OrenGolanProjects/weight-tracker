@@ -28,6 +28,7 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
+  viewportFit: 'cover', // enable env(safe-area-inset-*) for notch / home indicator
   themeColor: '#00E5FF',
 };
 
@@ -44,8 +45,10 @@ export default function RootLayout({
           <ColorModeProvider>
             <SnackbarProvider>
               <AuthProvider>
-                {/* Bottom padding on mobile so content clears the fixed bottom nav */}
-                <Box sx={{ pb: { xs: 7, md: 0 } }}>{children}</Box>
+                {/* Bottom padding on mobile so content clears the fixed bottom nav + home indicator */}
+                <Box sx={{ pb: { xs: 'calc(56px + env(safe-area-inset-bottom))', md: 0 } }}>
+                  {children}
+                </Box>
                 <BottomNav />
                 <InstallPrompt />
               </AuthProvider>
