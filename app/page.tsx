@@ -263,8 +263,10 @@ export default function HomePage() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Weight Tracker
           </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Typography variant="body2">{user.email}</Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 0, sm: 2 } }}>
+            <Typography variant="body2" sx={{ display: { xs: 'none', md: 'block' } }}>
+              {user.email}
+            </Typography>
             <IconButton
               onClick={() => router.push('/profile')}
               title="Edit Profile"
