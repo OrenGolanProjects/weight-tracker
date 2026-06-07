@@ -69,6 +69,7 @@ import WeightStatistics from '@/components/WeightStatistics';
 import BMITrendChart from '@/components/BMITrendChart';
 import UpdateAppButton from '@/components/UpdateAppButton';
 import ColorModeToggle from '@/components/ColorModeToggle';
+import QuickAddWeight from '@/components/QuickAddWeight';
 
 export default function HomePage() {
   const { user, loading, logout } = useAuth();
@@ -308,6 +309,13 @@ export default function HomePage() {
             Track your fitness journey
           </Typography>
         </Box>
+
+        {/* One-tap daily weight logging */}
+        <QuickAddWeight
+          uid={user.uid}
+          lastWeight={latestWeight?.weight}
+          onAdded={loadDashboardData}
+        />
 
         {dataLoading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
