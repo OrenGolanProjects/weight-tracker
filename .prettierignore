@@ -1,5 +1,8 @@
 # Dependencies
 node_modules
+**/node_modules
+.pnpm-store
+**/.pnpm-store
 pnpm-lock.yaml
 package-lock.json
 yarn.lock
@@ -31,3 +34,4 @@ terraform/.terraform
 coverage
 .vscode
 .idea
+.claude

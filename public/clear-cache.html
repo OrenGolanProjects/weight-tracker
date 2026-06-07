@@ -1,156 +1,160 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Clearing Cache - Weight Tracker</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+      .container {
+        background: white;
+        border-radius: 20px;
+        padding: 40px 30px;
+        max-width: 500px;
+        width: 100%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        text-align: center;
+      }
+      .icon {
+        font-size: 64px;
+        margin-bottom: 20px;
+      }
+      h1 {
+        color: #333;
+        margin-bottom: 15px;
+        font-size: 24px;
+      }
+      .status {
+        padding: 15px;
+        border-radius: 10px;
+        margin: 20px 0;
+        font-weight: 500;
+      }
+      .status.loading {
+        background: #fff3cd;
+        color: #856404;
+      }
+      .status.success {
+        background: #d4edda;
+        color: #155724;
+      }
+      .status.error {
+        background: #f8d7da;
+        color: #721c24;
+      }
+      .btn {
+        display: inline-block;
+        background: #667eea;
+        color: white;
+        padding: 15px 40px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        margin-top: 20px;
+        transition: all 0.3s;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      .btn:hover {
+        background: #5568d3;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      }
+      .steps {
+        text-align: left;
+        margin: 20px 0;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 10px;
+      }
+      .steps li {
+        margin: 10px 0;
+        line-height: 1.6;
+      }
+      .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #667eea;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
         }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+        100% {
+          transform: rotate(360deg);
         }
-        .container {
-            background: white;
-            border-radius: 20px;
-            padding: 40px 30px;
-            max-width: 500px;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            text-align: center;
-        }
-        .icon {
-            font-size: 64px;
-            margin-bottom: 20px;
-        }
-        h1 {
-            color: #333;
-            margin-bottom: 15px;
-            font-size: 24px;
-        }
-        .status {
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
-            font-weight: 500;
-        }
-        .status.loading {
-            background: #fff3cd;
-            color: #856404;
-        }
-        .status.success {
-            background: #d4edda;
-            color: #155724;
-        }
-        .status.error {
-            background: #f8d7da;
-            color: #721c24;
-        }
-        .btn {
-            display: inline-block;
-            background: #667eea;
-            color: white;
-            padding: 15px 40px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 600;
-            margin-top: 20px;
-            transition: all 0.3s;
-            border: none;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        .btn:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-        .steps {
-            text-align: left;
-            margin: 20px 0;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 10px;
-        }
-        .steps li {
-            margin: 10px 0;
-            line-height: 1.6;
-        }
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 20px auto;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <div class="icon">🔄</div>
-        <h1>Updating Weight Tracker</h1>
-        <div id="status" class="status loading">
-            <div class="spinner"></div>
-            <p>Clearing old cache...</p>
-        </div>
-        <div id="content"></div>
+      <div class="icon">🔄</div>
+      <h1>Updating Weight Tracker</h1>
+      <div id="status" class="status loading">
+        <div class="spinner"></div>
+        <p>Clearing old cache...</p>
+      </div>
+      <div id="content"></div>
     </div>
 
     <script>
-        async function clearServiceWorkerCache() {
-            const statusEl = document.getElementById('status');
-            const contentEl = document.getElementById('content');
+      async function clearServiceWorkerCache() {
+        const statusEl = document.getElementById('status');
+        const contentEl = document.getElementById('content');
 
-            try {
-                // Check if service workers are supported
-                if (!('serviceWorker' in navigator)) {
-                    statusEl.className = 'status success';
-                    statusEl.innerHTML = '<p>✅ No service worker detected. You\'re all set!</p>';
-                    showContinueButton();
-                    return;
-                }
+        try {
+          // Check if service workers are supported
+          if (!('serviceWorker' in navigator)) {
+            statusEl.className = 'status success';
+            statusEl.innerHTML = "<p>✅ No service worker detected. You're all set!</p>";
+            showContinueButton();
+            return;
+          }
 
-                // Get all service worker registrations
-                const registrations = await navigator.serviceWorker.getRegistrations();
+          // Get all service worker registrations
+          const registrations = await navigator.serviceWorker.getRegistrations();
 
-                if (registrations.length === 0) {
-                    statusEl.className = 'status success';
-                    statusEl.innerHTML = '<p>✅ No service worker found. Cache is clean!</p>';
-                    showContinueButton();
-                    return;
-                }
+          if (registrations.length === 0) {
+            statusEl.className = 'status success';
+            statusEl.innerHTML = '<p>✅ No service worker found. Cache is clean!</p>';
+            showContinueButton();
+            return;
+          }
 
-                // Unregister all service workers
-                let unregistered = 0;
-                for (const registration of registrations) {
-                    await registration.unregister();
-                    unregistered++;
-                }
+          // Unregister all service workers
+          let unregistered = 0;
+          for (const registration of registrations) {
+            await registration.unregister();
+            unregistered++;
+          }
 
-                // Clear all caches
-                const cacheNames = await caches.keys();
-                for (const cacheName of cacheNames) {
-                    await caches.delete(cacheName);
-                }
+          // Clear all caches
+          const cacheNames = await caches.keys();
+          for (const cacheName of cacheNames) {
+            await caches.delete(cacheName);
+          }
 
-                // Success!
-                statusEl.className = 'status success';
-                statusEl.innerHTML = `
+          // Success!
+          statusEl.className = 'status success';
+          statusEl.innerHTML = `
                     <p>✅ Successfully cleared cache!</p>
                     <p style="font-size: 14px; margin-top: 10px; opacity: 0.8;">
                         Unregistered ${unregistered} service worker(s)<br>
@@ -158,29 +162,28 @@
                     </p>
                 `;
 
-                showSuccessContent();
-
-            } catch (error) {
-                console.error('Error clearing cache:', error);
-                statusEl.className = 'status error';
-                statusEl.innerHTML = '<p>⚠️ Error clearing cache automatically</p>';
-                showManualInstructions();
-            }
+          showSuccessContent();
+        } catch (error) {
+          console.error('Error clearing cache:', error);
+          statusEl.className = 'status error';
+          statusEl.innerHTML = '<p>⚠️ Error clearing cache automatically</p>';
+          showManualInstructions();
         }
+      }
 
-        function showContinueButton() {
-            const contentEl = document.getElementById('content');
-            contentEl.innerHTML = `
+      function showContinueButton() {
+        const contentEl = document.getElementById('content');
+        contentEl.innerHTML = `
                 <a href="/" class="btn">Continue to App</a>
                 <p style="margin-top: 15px; font-size: 14px; color: #666;">
                     The app will load the latest version
                 </p>
             `;
-        }
+      }
 
-        function showSuccessContent() {
-            const contentEl = document.getElementById('content');
-            contentEl.innerHTML = `
+      function showSuccessContent() {
+        const contentEl = document.getElementById('content');
+        contentEl.innerHTML = `
                 <div class="steps">
                     <h3 style="margin-bottom: 15px; color: #333;">Next Steps:</h3>
                     <ol>
@@ -191,11 +194,11 @@
                 </div>
                 <a href="/" class="btn">Open App Now</a>
             `;
-        }
+      }
 
-        function showManualInstructions() {
-            const contentEl = document.getElementById('content');
-            contentEl.innerHTML = `
+      function showManualInstructions() {
+        const contentEl = document.getElementById('content');
+        contentEl.innerHTML = `
                 <div class="steps">
                     <h3 style="margin-bottom: 15px; color: #333;">Manual Steps:</h3>
                     <p style="margin-bottom: 15px;"><strong>iOS (Safari):</strong></p>
@@ -215,10 +218,10 @@
                     </ol>
                 </div>
             `;
-        }
+      }
 
-        // Run automatically when page loads
-        clearServiceWorkerCache();
+      // Run automatically when page loads
+      clearServiceWorkerCache();
     </script>
-</body>
+  </body>
 </html>

@@ -41,6 +41,7 @@ https://weight-tracker-7e67f.firebaseapp.com/settings
 Environment variables are configured in `.env.production.local` for Firebase Hosting:
 
 **Current Firebase Hosting URLs:**
+
 - Primary: https://weight-tracker-7e67f.web.app
 - Alternative: https://weight-tracker-7e67f.firebaseapp.com
 
@@ -230,6 +231,7 @@ npm run deploy
 - ✅ Version rollback support
 
 **Production URLs:**
+
 - Primary: https://weight-tracker-7e67f.web.app
 - Alternative: https://weight-tracker-7e67f.firebaseapp.com
 
