@@ -1,4 +1,4 @@
-import { BMICategory, WeightComparison, WeightEntry } from '@/types';
+import { BMICategory, Gender, WeightComparison, WeightEntry } from '@/types';
 
 /**
  * Calculate BMI from weight and height
@@ -22,6 +22,44 @@ export const getBMICategory = (bmi: number): BMICategory => {
   if (bmi < 25) return 'Normal';
   if (bmi < 30) return 'Overweight';
   return 'Obese';
+};
+
+/**
+ * Estimate body fat % using the Deurenberg formula (BMI-based).
+ * BF% = 1.20*BMI + 0.23*age - 10.8*sex - 5.4  (sex: male=1, female=0)
+ * This is an estimate (±4-5%); accuracy depends on age/gender being set.
+ * @returns estimated body fat % (1 decimal), or null if inputs are missing
+ */
+export const calculateBodyFat = (
+  bmi: number,
+  age: number | null | undefined,
+  gender: Gender | null | undefined
+): number | null => {
+  if (!bmi || bmi <= 0 || !age || age <= 0) return null;
+  if (gender !== 'male' && gender !== 'female') return null;
+  const sex = gender === 'male' ? 1 : 0;
+  const bodyFat = 1.2 * bmi + 0.23 * age - 10.8 * sex - 5.4;
+  return parseFloat(Math.max(0, bodyFat).toFixed(1));
+};
+
+export type BodyFatCategory = 'Essential' | 'Athletic' | 'Fitness' | 'Average' | 'High';
+
+/**
+ * Categorize body fat % by gender (American Council on Exercise ranges).
+ */
+export const getBodyFatCategory = (bodyFat: number, gender: Gender): BodyFatCategory => {
+  if (gender === 'male') {
+    if (bodyFat < 6) return 'Essential';
+    if (bodyFat < 14) return 'Athletic';
+    if (bodyFat < 18) return 'Fitness';
+    if (bodyFat < 25) return 'Average';
+    return 'High';
+  }
+  if (bodyFat < 14) return 'Essential';
+  if (bodyFat < 21) return 'Athletic';
+  if (bodyFat < 25) return 'Fitness';
+  if (bodyFat < 32) return 'Average';
+  return 'High';
 };
 
 /**

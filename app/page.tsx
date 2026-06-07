@@ -48,7 +48,12 @@ import {
   getProgressMedia,
   getPinnedDocuments,
 } from '@/lib/firestore';
-import { calculateBMI, calculateWeightChange } from '@/lib/utils';
+import {
+  calculateBMI,
+  calculateWeightChange,
+  calculateBodyFat,
+  getBodyFatCategory,
+} from '@/lib/utils';
 import { exportSummaryReport } from '@/lib/export';
 import type {
   User as UserProfile,
@@ -62,6 +67,7 @@ import BodyMeasurementsChart from '@/components/BodyMeasurementsChart';
 import GoalProgress from '@/components/GoalProgress';
 import WeightStatistics from '@/components/WeightStatistics';
 import BMITrendChart from '@/components/BMITrendChart';
+import UpdateAppButton from '@/components/UpdateAppButton';
 
 export default function HomePage() {
   const { user, loading, logout } = useAuth();
@@ -254,6 +260,7 @@ export default function HomePage() {
   }
 
   const bmi = getBMI();
+  const bodyFat = bmi ? calculateBodyFat(bmi, profile?.age, profile?.gender) : null;
 
   return (
     <Box sx={{ flexGrow: 1 }} ref={topRef} key={`home-${user.uid}-${dataLoading}`}>
@@ -277,6 +284,7 @@ export default function HomePage() {
                 sx={{ width: 32, height: 32 }}
               />
             </IconButton>
+            <UpdateAppButton />
             <IconButton color="inherit" onClick={() => router.push('/settings')} title="Settings">
               <SettingsIcon />
             </IconButton>
@@ -354,6 +362,35 @@ export default function HomePage() {
                         <Typography variant="h4">--</Typography>
                         <Typography variant="body2" color="text.secondary">
                           {!profile?.height ? 'Add height in profile' : 'Add weight entry'}
+                        </Typography>
+                      </>
+                    )}
+                  </CardContent>
+                </Card>
+              </Box>
+
+              <Box sx={{ flex: { xs: '1 1 100%', sm: '1 1 45%', md: '1 1 22%' } }}>
+                <Card>
+                  <CardContent>
+                    <Typography color="text.secondary" gutterBottom>
+                      Body Fat %
+                    </Typography>
+                    {bodyFat !== null && profile?.gender ? (
+                      <>
+                        <Typography variant="h4">{bodyFat.toFixed(1)}%</Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {getBodyFatCategory(bodyFat, profile.gender)} · est.
+                        </Typography>
+                      </>
+                    ) : (
+                      <>
+                        <Typography variant="h4">--</Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {!bmi
+                            ? 'Add weight & height'
+                            : !profile?.gender
+                              ? 'Add gender in profile'
+                              : 'Add age in profile'}
                         </Typography>
                       </>
                     )}

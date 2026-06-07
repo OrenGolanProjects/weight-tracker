@@ -58,6 +58,9 @@ export const DEFAULT_CALENDAR_SETTINGS: CalendarSettings = {
   lastSyncedAt: null,
 };
 
+// Gender (used to estimate body fat %)
+export type Gender = 'male' | 'female';
+
 // User Profile
 export interface User {
   uid: string;
@@ -65,6 +68,7 @@ export interface User {
   name: string | null;
   age: number | null;
   height: number | null; // in cm
+  gender: Gender | null; // used for body-fat estimation
   goalWeight: number | null; // in kg
   photoURL: string | null;
   calendarSettings?: CalendarSettings; // Optional calendar integration

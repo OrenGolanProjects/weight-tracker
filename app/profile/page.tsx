@@ -12,9 +12,11 @@ import {
   CircularProgress,
   Alert,
   InputAdornment,
+  MenuItem,
 } from '@mui/material';
 import { useAuth } from '@/contexts/AuthContext';
 import { getUserProfile, updateUserProfile, createUserProfile } from '@/lib/firestore';
+import type { Gender } from '@/types';
 
 export default function ProfilePage() {
   const { user, loading: authLoading } = useAuth();
@@ -29,6 +31,7 @@ export default function ProfilePage() {
     name: '',
     age: '',
     height: '',
+    gender: '',
     goalWeight: '',
   });
 
@@ -56,6 +59,7 @@ export default function ProfilePage() {
           name: profile.name || '',
           age: profile.age ? profile.age.toString() : '',
           height: profile.height ? profile.height.toString() : '',
+          gender: profile.gender || '',
           goalWeight: profile.goalWeight ? profile.goalWeight.toString() : '',
         });
       }
@@ -115,6 +119,7 @@ export default function ProfilePage() {
         name: formData.name.trim(),
         age,
         height,
+        gender: (formData.gender || null) as Gender | null,
         goalWeight,
         photoURL: user.photoURL || null,
       };
@@ -202,6 +207,22 @@ export default function ProfilePage() {
             disabled={saving}
             inputProps={{ min: 1, max: 150 }}
           />
+
+          <TextField
+            select
+            fullWidth
+            label="Gender"
+            name="gender"
+            value={formData.gender}
+            onChange={handleChange}
+            margin="normal"
+            disabled={saving}
+            helperText="Used to estimate body fat %"
+          >
+            <MenuItem value="">Prefer not to say</MenuItem>
+            <MenuItem value="male">Male</MenuItem>
+            <MenuItem value="female">Female</MenuItem>
+          </TextField>
 
           <TextField
             fullWidth
